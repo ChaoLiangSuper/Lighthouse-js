@@ -1,0 +1,13 @@
+{
+  "name": "lighthouse-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
+  "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.12.8",
+    "lerna": "^3.18.4",
+    "typescript": "^3.7.2"
+  }
+}
