@@ -1,0 +1,8 @@
+{
+  "name": "Lighthouse-core",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ChaoLiangSuper/Lighthouse-core.git",
+  "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
+  "license": "MIT"
+}
