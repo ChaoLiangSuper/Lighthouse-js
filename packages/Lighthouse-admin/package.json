@@ -1,0 +1,8 @@
+{
+  "name": "Lighthouse-admin",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:ChaoLiangSuper/Lighthouse-admin.git",
+  "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
+  "license": "MIT"
+}
