@@ -5,6 +5,9 @@
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start:admin": "cd ./packages/Lighthouse-admin && yarn dev"
+  },
   "devDependencies": {
     "@types/node": "^12.12.8",
     "lerna": "^3.18.4",
