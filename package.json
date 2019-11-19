@@ -2,15 +2,21 @@
   "name": "lighthouse-js",
   "version": "1.0.0",
   "main": "index.js",
+  "private": true,
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start:admin": "cd ./packages/Lighthouse-admin && yarn dev"
+    "start:admin": "cd ./packages/Lighthouse-admin && yarn dev",
+    "clean": "lerna clean --yes",
+    "build": "lerna run --stream build --no-private"
   },
   "devDependencies": {
     "@types/node": "^12.12.8",
     "lerna": "^3.18.4",
     "typescript": "^3.7.2"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
