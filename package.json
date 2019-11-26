@@ -8,15 +8,17 @@
   "license": "MIT",
   "scripts": {
     "start:admin": "cd ./packages/Lighthouse-admin && yarn dev",
+    "start:core": "cd ./packages/Lighthouse-core && yarn dev",
     "clean": "lerna clean --yes",
     "build": "lerna run --stream build --no-private"
   },
   "devDependencies": {
-    "@types/node": "^12.12.8",
-    "lerna": "^3.18.4",
-    "typescript": "^3.7.2"
+    "lerna": "^3.18.4"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
 }
