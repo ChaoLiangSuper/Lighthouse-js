@@ -8,11 +8,11 @@ interface User {
 const userSchema = new Schema<User>({
   username: {
     type: String,
-    unique: true,
+    unique: true
   },
   password: {
-    type: String,
-  },
+    type: String
+  }
 });
 
 const User = model('User', userSchema);
