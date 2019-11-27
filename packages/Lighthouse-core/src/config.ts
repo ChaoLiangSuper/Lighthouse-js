@@ -3,5 +3,5 @@ interface Instance {
 }
 
 export const instance: Instance = {
-  name: 'Lighthouse-core',
+  name: 'Lighthouse-core'
 };
