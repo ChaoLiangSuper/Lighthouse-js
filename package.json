@@ -9,8 +9,8 @@
   "scripts": {
     "start:admin": "cd ./packages/Lighthouse-admin && yarn dev",
     "start:core": "cd ./packages/Lighthouse-core && yarn dev",
-    "clean": "lerna clean --yes",
-    "build": "lerna run --stream build --no-private",
+    "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "build": "yarn workspaces run build",
     "format": "prettier --write \"./packages/**/src/**/*{ts,tsx,js,jsx}\"",
     "lint": "eslint --fix \"./packages/**/src/**/*.{js,jsx,ts,tsx}\""
   },
@@ -22,7 +22,6 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
     "husky": "^3.1.0",
-    "lerna": "^3.18.4",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
     "typescript": "^3.7.2"
