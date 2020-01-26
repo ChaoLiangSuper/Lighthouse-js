@@ -6,11 +6,11 @@ import * as db from './db';
 
 dotenv.config({ path: '../../.env' });
 
-const port = process.env.PORT || 5000;
+const port = process.env.CORE_PORT || 5000;
 const server = http.createServer(app);
 
 server.listen(port);
-server.on('error', err => {
+server.on('error', (err) => {
   console.error(`[${instance.name}]: ${err}`);
 });
 server.on('listening', () => {
