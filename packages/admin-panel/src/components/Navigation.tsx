@@ -1,12 +1,7 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MenuIcon from '@material-ui/icons/Menu';
-
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const NavigationBar: React.FC = () => {
+const Navigation: React.FC = () => {
   const styles = useStyles();
 
   return (
@@ -36,4 +31,4 @@ const NavigationBar: React.FC = () => {
   );
 };
 
-export default NavigationBar;
+export default Navigation;
