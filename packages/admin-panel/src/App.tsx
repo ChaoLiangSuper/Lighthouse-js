@@ -1,10 +1,9 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import ContentWrapper from './components/ContentWrapper';
-import Navigation from './components/Navigation';
-import Login from './components/Login';
-import Copyright from './components/Copyright';
+import Router from './router';
+import store from './store';
 
 const useStyles = makeStyles({
   root: {
@@ -15,13 +14,12 @@ const useStyles = makeStyles({
 const App: React.FC = () => {
   const styles = useStyles();
   return (
-    <div className={styles.root}>
-      <CssBaseline />
-      <Navigation />
-      <ContentWrapper>
-        <Copyright />
-      </ContentWrapper>
-    </div>
+    <Provider store={store}>
+      <div className={styles.root}>
+        <CssBaseline />
+        <Router />
+      </div>
+    </Provider>
   );
 };
 
