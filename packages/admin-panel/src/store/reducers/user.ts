@@ -5,7 +5,7 @@ export interface User {
   permissions: string[];
 }
 
-const initialState = {
+const initialState: User = {
   username: null,
   permissions: []
 };
