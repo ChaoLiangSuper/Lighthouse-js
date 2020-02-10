@@ -1,10 +1,8 @@
+import { UserAction } from '../constants';
+
 export interface User {
   username: string | null;
   permissions: string[];
-}
-
-export interface UserAction {
-  type: 'LOGIN';
 }
 
 const initialState = {
@@ -12,9 +10,14 @@ const initialState = {
   permissions: []
 };
 
-const reducer = (state = initialState, action: UserAction): User => {
+const reducer = (state = initialState, action: UserAction) => {
   switch (action.type) {
     case 'LOGIN':
+      return {
+        ...initialState,
+        ...action.data
+      };
+    case 'LOGOUT':
     default:
       return state;
   }

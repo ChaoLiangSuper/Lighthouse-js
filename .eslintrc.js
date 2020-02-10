@@ -29,6 +29,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     'prettier/prettier': 1,
-    'react/prop-types': 0
+    'react/prop-types': 0,
+    '@typescript-eslint/explicit-function-return-type': 0
   }
 };
