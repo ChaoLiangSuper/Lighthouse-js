@@ -4,6 +4,7 @@ export interface User extends Document {
   username: string;
   password: string;
   phone: string;
+  permissions: string[];
 }
 
 export const schema = new Schema<User>({
