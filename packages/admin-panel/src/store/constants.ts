@@ -1,6 +1,4 @@
-import { User } from './reducers/user';
-import { Directory } from './reducers/directory';
-import { Record } from './reducers/record';
+import { User, Directory, Record, ViewState } from '../types';
 
 export type userActionType = 'LOGIN' | 'LOGOUT';
 
@@ -21,4 +19,11 @@ export type recordActionType = 'RECORD_ADD' | 'RECORD_UPDATE' | 'RECORD_DELETE';
 export interface RecordAction {
   type: recordActionType;
   data: Record;
+}
+
+export type viewActionType = 'VIEW_UPDATE';
+
+export interface ViewAction {
+  type: viewActionType;
+  data: ViewState<any>;
 }

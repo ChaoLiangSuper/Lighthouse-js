@@ -1,14 +1,14 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import user, { User } from './reducers/user';
-
-export interface Store {
-  user: User;
-}
+import user from './reducers/user';
+import directories from './reducers/directories';
+import viewState from './reducers/viewState';
 
 const store = createStore(
   combineReducers({
-    user
+    user,
+    directories,
+    viewState
   }),
   composeWithDevTools(applyMiddleware())
 );

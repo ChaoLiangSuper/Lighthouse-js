@@ -1,9 +1,5 @@
 import { UserAction } from '../constants';
-
-export interface User {
-  username: string | null;
-  permissions: string[];
-}
+import { User } from '../../types';
 
 const initialState: User = {
   username: null,

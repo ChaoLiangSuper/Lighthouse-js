@@ -4,27 +4,42 @@ import ContentWrapper from '../components/ContentWrapper';
 import Navigation from '../components/Navigation';
 import Copyright from '../components/Copyright';
 import Login from '../components/Login';
-import { User } from '../store/reducers/user';
-import { Store } from '../store';
+import DashboardView from '../components/DashboardView';
+import DirectoryView from '../components/DirectoryView';
+import { ViewState, Store } from '../types';
 
 interface RouterProps {
-  user: User;
+  viewState: ViewState<any>;
 }
 
-const Router: React.FC<RouterProps> = ({ user }) => {
-  if (user.username === null) {
+const Page: React.FC = ({ children }) => (
+  <>
+    <Navigation />
+    <ContentWrapper>
+      {children}
+      <Copyright />
+    </ContentWrapper>
+  </>
+);
+
+const Router: React.FC<RouterProps> = ({ viewState }) => {
+  if (viewState.view === 'login') {
     return <Login />;
   }
+  if (viewState.view === 'directory') {
+    return (
+      <Page>
+        <DirectoryView />
+      </Page>
+    );
+  }
   return (
-    <>
-      <Navigation />
-      <ContentWrapper>
-        <Copyright />
-      </ContentWrapper>
-    </>
+    <Page>
+      <DashboardView />
+    </Page>
   );
 };
 
-export default connect(({ user }: Store) => ({
-  user
+export default connect(({ viewState }: Store) => ({
+  viewState
 }))(Router);

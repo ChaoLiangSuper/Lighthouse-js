@@ -1,10 +1,16 @@
 import { DirectoryAction } from '../constants';
+import { DirectoryCollection } from '../../types';
 
-export interface Directory {
-  [s: string]: {};
-}
-
-const initialState: Directory = {};
+const initialState: DirectoryCollection = {
+  directory1: {
+    name: 'directory1',
+    records: {}
+  },
+  directory2: {
+    name: 'directory2',
+    records: {}
+  }
+};
 
 const reducer = (state = initialState, action: DirectoryAction) => {
   switch (action.type) {

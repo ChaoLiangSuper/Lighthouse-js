@@ -9,12 +9,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { User } from '../store/reducers/user';
+import { User, ViewState } from '../types';
 
 const login = (data: User) => ({ type: 'LOGIN', data });
+const changeView = (data: ViewState<null>) => ({ type: 'VIEW_UPDATE', data });
 
 interface LoginProps {
   login: (u: User) => void;
+  changeView: (v: ViewState<null>) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Login: React.FC<LoginProps> = ({ login }) => {
+const Login: React.FC<LoginProps> = ({ login, changeView }) => {
   const classes = useStyles();
 
   const [email, setEmail] = React.useState('');
@@ -83,7 +85,13 @@ const Login: React.FC<LoginProps> = ({ login }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={() => login({ username: email, permissions: [] })}
+            onClick={() => {
+              login({ username: email, permissions: [] });
+              changeView({
+                view: 'dashboard',
+                state: null
+              });
+            }}
           >
             Sign In
           </Button>
@@ -93,4 +101,4 @@ const Login: React.FC<LoginProps> = ({ login }) => {
   );
 };
 
-export default connect(null, (dispatch) => bindActionCreators({ login }, dispatch))(Login);
+export default connect(null, (dispatch) => bindActionCreators({ login, changeView }, dispatch))(Login);
