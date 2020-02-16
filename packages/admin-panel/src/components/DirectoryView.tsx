@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Directory, Record, Store } from '../types';
 import Navigation from './Navigation';
 import ContentWrapper from './ContentWrapper';
+import DirectoryModal from './DirectoryModal';
 
 type urlParams = {
   directoryName: string;
@@ -27,31 +28,30 @@ interface DirectoryViewProps extends RouteComponentProps<urlParams> {
   };
 }
 
-const useStyles = makeStyles((theme) => {
-  console.log(theme);
-  return {
-    root: {
-      padding: 20
-    },
-    titleBar: {
-      padding: `${theme.spacing(3)}px ${theme.spacing()}px`,
-      display: 'flex',
-      justifyItems: 'center'
-    },
-    title: {
-      flexGrow: 1
-    },
-    row: {
-      '&:hover': {
-        background: theme.palette.grey[300],
-        cursor: 'pointer'
-      }
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: 20
+  },
+  titleBar: {
+    padding: `${theme.spacing(3)}px ${theme.spacing()}px`,
+    display: 'flex',
+    justifyItems: 'center'
+  },
+  title: {
+    flexGrow: 1
+  },
+  row: {
+    '&:hover': {
+      background: theme.palette.grey[300],
+      cursor: 'pointer'
     }
-  };
-});
+  }
+}));
 
 const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const [record, setRecord] = useState<Record | null>(null);
 
   if (_.isUndefined(config)) {
     return <Redirect to="/" />;
@@ -86,7 +86,14 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
             </TableHead>
             <TableBody>
               {_.map(records, (record) => (
-                <TableRow key={record.key} className={classes.row} onClick={() => console.log('test')}>
+                <TableRow
+                  key={record.key}
+                  className={classes.row}
+                  onClick={() => {
+                    setOpen(true);
+                    setRecord(record);
+                  }}
+                >
                   {_.map(config.keysInTable, (columnName) => (
                     <TableCell key={columnName}>{record[columnName]}</TableCell>
                   ))}
@@ -96,6 +103,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
           </Table>
         </div>
       </ContentWrapper>
+      <DirectoryModal open={open} onClose={() => setOpen(false)} data={record} />
     </>
   );
 };
