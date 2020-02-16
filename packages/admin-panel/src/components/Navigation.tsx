@@ -13,7 +13,8 @@ const useStyles = makeStyles((theme) => ({
     })
   },
   title: {
-    flexGrow: 1
+    flexGrow: 1,
+    fontWeight: 700
   }
 }));
 
@@ -24,7 +25,7 @@ const Navigation: React.FC = () => {
     <AppBar position="absolute" className={styles.appBar}>
       <Toolbar>
         <Typography component="h1" variant="h6" color="inherit" noWrap className={styles.title}>
-          Dashboard
+          Lighthouse
         </Typography>
       </Toolbar>
     </AppBar>

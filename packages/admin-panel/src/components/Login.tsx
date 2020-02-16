@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { User } from '../store/reducers/user';
+import { User } from '../types';
 
 const login = (data: User) => ({ type: 'LOGIN', data });
 
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Login: React.FC<LoginProps> = ({ login }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const [email, setEmail] = React.useState('');
 
@@ -83,7 +85,10 @@ const Login: React.FC<LoginProps> = ({ login }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={() => login({ username: email, permissions: [] })}
+            onClick={() => {
+              login({ username: email, permissions: [] });
+              history.push('/');
+            }}
           >
             Sign In
           </Button>

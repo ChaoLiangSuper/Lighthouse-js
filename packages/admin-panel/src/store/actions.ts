@@ -1,6 +1,4 @@
-import { User } from './reducers/user';
-import { Directory } from './reducers/directory';
-import { Record } from './reducers/record';
+import { User, Directory, Record } from '../types';
 
 export type userActionType = 'LOGIN' | 'LOGOUT';
 

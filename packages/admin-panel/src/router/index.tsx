@@ -1,30 +1,17 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import ContentWrapper from '../components/ContentWrapper';
-import Navigation from '../components/Navigation';
-import Copyright from '../components/Copyright';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Login from '../components/Login';
-import { User } from '../store/reducers/user';
-import { Store } from '../store';
+import DashboardView from '../components/DashboardView';
+import DirectoryView from '../components/DirectoryView';
 
-interface RouterProps {
-  user: User;
-}
+const Router: React.FC = () => (
+  <BrowserRouter>
+    <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/directory/:directoryName" component={DirectoryView} />
+      <Route path="/" component={DashboardView} />
+    </Switch>
+  </BrowserRouter>
+);
 
-const Router: React.FC<RouterProps> = ({ user }) => {
-  if (user.username === null) {
-    return <Login />;
-  }
-  return (
-    <>
-      <Navigation />
-      <ContentWrapper>
-        <Copyright />
-      </ContentWrapper>
-    </>
-  );
-};
-
-export default connect(({ user }: Store) => ({
-  user
-}))(Router);
+export default Router;
