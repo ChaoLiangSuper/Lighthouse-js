@@ -1,4 +1,4 @@
-import { User, Directory, Record, ViewState } from '../types';
+import { User, Directory, Record } from '../types';
 
 export type userActionType = 'LOGIN' | 'LOGOUT';
 
@@ -19,11 +19,4 @@ export type recordActionType = 'RECORD_ADD' | 'RECORD_UPDATE' | 'RECORD_DELETE';
 export interface RecordAction {
   type: recordActionType;
   data: Record;
-}
-
-export type viewActionType = 'VIEW_UPDATE';
-
-export interface ViewAction {
-  type: viewActionType;
-  data: ViewState<any>;
 }

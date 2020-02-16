@@ -1,19 +1,21 @@
 import _ from 'lodash';
 import React from 'react';
+import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { grey } from '@material-ui/core/colors';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { bindActionCreators } from 'redux';
-import { DirectoryCollection, Store, ViewState } from '../types';
-
-const changeView = (data: ViewState<{}>) => ({ type: 'VIEW_UPDATE', data });
+import { DirectoryCollection, Store } from '../types';
+import Navigation from './Navigation';
+import ContentWrapper from './ContentWrapper';
 
 interface DashboardViewProps {
   directories: DirectoryCollection;
-  changeView: (v: ViewState<{ key: string }>) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
   button: {
     height: 200
   },
+  newButton: {
+    textAlign: 'center'
+  },
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap'
@@ -36,48 +41,48 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DashboardView: React.FC<DashboardViewProps> = ({ directories, changeView }) => {
+const DashboardView: React.FC<DashboardViewProps> = ({ directories }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h4" className={classes.title}>
-        Directories
-      </Typography>
-      <div className={classes.wrapper}>
-        {_.map(directories, (directory, i) => (
-          <Card key={i} className={classes.card}>
-            <CardActionArea
-              className={classes.button}
-              onClick={() =>
-                changeView({
-                  view: 'directory',
-                  state: {
-                    key: directory.name
-                  }
-                })
-              }
-            >
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all
-                  continents except Antarctica
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        ))}
-      </div>
-    </div>
+    <>
+      <Navigation />
+      <ContentWrapper>
+        <div className={classes.root}>
+          <Typography variant="h4" className={classes.title}>
+            Directories
+          </Typography>
+          <div className={classes.wrapper}>
+            <Card className={classes.card}>
+              <CardActionArea className={clsx(classes.button, classes.newButton)}>
+                <AddCircleOutlineIcon style={{ fontSize: 60, color: grey[400] }} />
+              </CardActionArea>
+            </Card>
+            {_.map(directories, (directory, i) => (
+              <Card key={i} className={classes.card}>
+                <CardActionArea
+                  className={classes.button}
+                  onClick={() => history.push(`/directory/${encodeURIComponent(directory.name)}`)}
+                >
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      {directory.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                      {`${directory.numOfRecords} records`}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </ContentWrapper>
+    </>
   );
 };
 
-export default connect(
-  ({ directories }: Store) => ({
-    directories
-  }),
-  (dispatch) => bindActionCreators({ changeView }, dispatch)
-)(DashboardView);
+export default connect(({ directories }: Store) => ({
+  directories
+}))(DashboardView);

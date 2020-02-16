@@ -1,4 +1,4 @@
-import { UserAction } from '../constants';
+import { UserAction } from '../actions';
 import { User } from '../../types';
 
 const initialState: User = {

@@ -4,12 +4,23 @@ export type DirectoryCollection = {
 
 export type Directory = {
   name: string;
-  records: {
-    [key: string]: Record;
+  keysInTable: string[];
+  schema: {
+    column: string;
+    type: 'string' | 'number' | 'boolean';
+    isOptional: boolean;
+  }[];
+  numOfRecords: number;
+};
+
+export type RecordCollection = {
+  [s: string]: {
+    [s: string]: Record;
   };
 };
 
 export type Record = {
+  key: string;
   [s: string]: any;
 };
 
@@ -18,17 +29,8 @@ export type User = {
   permissions: string[];
 };
 
-export type views = 'login' | 'dashboard' | 'directory';
-
-export type ViewState<T> = {
-  view: views;
-  state: T;
-};
-
 export type Store = {
-  directories: {
-    [key: string]: Directory;
-  };
+  directories: DirectoryCollection;
+  records: RecordCollection;
   user: User;
-  viewState: ViewState<any>;
 };
