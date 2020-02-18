@@ -7,32 +7,32 @@ const initialState: DirectoryCollection = {
     keysInTable: ['key', 'column1', 'column2', 'column3'],
     schema: [
       {
-        column: 'key',
+        name: 'key',
         type: 'string',
         isOptional: false
       },
       {
-        column: 'column1',
+        name: 'column1',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column2',
+        name: 'column2',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column3',
+        name: 'column3',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column4',
+        name: 'column4',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column5',
+        name: 'column5',
         type: 'string',
         isOptional: true
       }
@@ -44,32 +44,32 @@ const initialState: DirectoryCollection = {
     keysInTable: ['key', 'column1', 'column2'],
     schema: [
       {
-        column: 'key',
+        name: 'key',
         type: 'string',
         isOptional: false
       },
       {
-        column: 'column1',
+        name: 'column1',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column2',
+        name: 'column2',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column3',
+        name: 'column3',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column4',
+        name: 'column4',
         type: 'string',
         isOptional: true
       },
       {
-        column: 'column5',
+        name: 'column5',
         type: 'string',
         isOptional: true
       }

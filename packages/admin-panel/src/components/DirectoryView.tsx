@@ -16,6 +16,7 @@ import { Directory, Record, Store } from '../types';
 import Navigation from './Navigation';
 import ContentWrapper from './ContentWrapper';
 import DirectoryModal from './DirectoryModal';
+import ConfigModal from './ConfigModal';
 
 type urlParams = {
   directoryName: string;
@@ -50,7 +51,8 @@ const useStyles = makeStyles((theme) => ({
 
 const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [isDirectoryModalOpen, setDirectoryModalOpen] = useState(false);
+  const [isConfigModalOpen, setConfigModalOpen] = useState(false);
   const [record, setRecord] = useState<Record | null>(null);
 
   if (_.isUndefined(config)) {
@@ -72,7 +74,13 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
             <Typography variant="h4" component="span" className={classes.title}>
               {config.name}{' '}
             </Typography>
-            <Button variant="contained" color="primary" size="small" disableElevation>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              disableElevation
+              onClick={() => setConfigModalOpen(true)}
+            >
               Edit
             </Button>
           </div>
@@ -90,7 +98,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
                   key={record.key}
                   className={classes.row}
                   onClick={() => {
-                    setOpen(true);
+                    setDirectoryModalOpen(true);
                     setRecord(record);
                   }}
                 >
@@ -103,7 +111,15 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
           </Table>
         </div>
       </ContentWrapper>
-      <DirectoryModal open={open} onClose={() => setOpen(false)} data={record} />
+      <DirectoryModal
+        open={isDirectoryModalOpen}
+        onClose={() => {
+          setDirectoryModalOpen(false);
+          setRecord(null);
+        }}
+        data={record}
+      />
+      <ConfigModal open={isConfigModalOpen} onClose={() => setConfigModalOpen(false)} data={config} />
     </>
   );
 };

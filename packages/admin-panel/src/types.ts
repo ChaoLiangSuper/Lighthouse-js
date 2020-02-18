@@ -6,7 +6,7 @@ export type Directory = {
   name: string;
   keysInTable: string[];
   schema: {
-    column: string;
+    name: string;
     type: 'string' | 'number' | 'boolean';
     isOptional: boolean;
   }[];
