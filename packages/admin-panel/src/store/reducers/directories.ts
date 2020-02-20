@@ -9,32 +9,38 @@ const initialState: DirectoryCollection = {
       {
         name: 'key',
         type: 'string',
-        isOptional: false
+        isOptional: false,
+        defaultValue: ''
       },
       {
         name: 'column1',
-        type: 'string',
-        isOptional: true
+        type: 'boolean',
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column2',
-        type: 'string',
-        isOptional: true
+        type: 'number',
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column3',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column4',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column5',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       }
     ],
     numOfRecords: 1
@@ -46,32 +52,38 @@ const initialState: DirectoryCollection = {
       {
         name: 'key',
         type: 'string',
-        isOptional: false
+        isOptional: false,
+        defaultValue: ''
       },
       {
         name: 'column1',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column2',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column3',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column4',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       },
       {
         name: 'column5',
         type: 'string',
-        isOptional: true
+        isOptional: true,
+        defaultValue: ''
       }
     ],
     numOfRecords: 0

@@ -1,3 +1,5 @@
+export type availableFieldType = 'string' | 'number' | 'boolean';
+
 export type DirectoryCollection = {
   [s: string]: Directory;
 };
@@ -7,8 +9,9 @@ export type Directory = {
   keysInTable: string[];
   schema: {
     name: string;
-    type: 'string' | 'number' | 'boolean';
+    type: availableFieldType;
     isOptional: boolean;
+    defaultValue: string;
   }[];
   numOfRecords: number;
 };
