@@ -1,17 +1,15 @@
 import React from 'react';
-import Modal from '@material-ui/core/Modal';
-import { makeStyles } from '@material-ui/core/styles';
-import { Record } from '../../types';
+import MaterialUiModal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 import CloseIcon from '@material-ui/icons/Close';
+import { makeStyles } from '@material-ui/core/styles';
 
-interface DirectoryModalProps {
+interface ModalProps {
   open: boolean;
   onClose: () => void;
-  data: Record | null;
+  title: string;
+  buttons?: React.ReactNode;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -21,12 +19,16 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center'
   },
   paper: {
+    display: 'flex',
+    flexDirection: 'column',
     position: 'absolute',
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(2, 4, 3),
     borderRadius: 4,
     width: `calc(100vw - ${theme.spacing(20)}px)`,
-    height: `calc(100vh - ${theme.spacing(20)}px)`
+    maxWidth: 1000,
+    height: `calc(100vh - ${theme.spacing(20)}px)`,
+    maxHeight: 700
   },
   titleBar: {
     display: 'flex',
@@ -35,43 +37,40 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1
   },
-  config: {}
+  editableSection: {
+    padding: `${theme.spacing(3)}px 0px`,
+    flexGrow: 1
+  },
+  buttonBar: {
+    display: 'flex'
+  },
+  buttonBarSpacer: {
+    marginRight: 'auto'
+  }
 }));
 
-const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose, data }) => {
+const Modal: React.FC<ModalProps> = ({ open, onClose, title, children, buttons }) => {
   const classes = useStyles();
 
-  if (data === null) {
-    return null;
-  }
-
   return (
-    <Modal open={open} onClose={onClose} className={classes.root}>
+    <MaterialUiModal open={open} onClose={onClose} className={classes.root}>
       <div className={classes.paper}>
         <div className={classes.titleBar}>
           <Typography variant="h5" component="span" color="textSecondary" className={classes.title}>
-            Key: {data.key}
+            {title}
           </Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
         </div>
-        <div className={classes.config}>
-          <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField />
-            </Grid>
-          </Grid>
+        <div className={classes.editableSection}>{children}</div>
+        <div className={classes.buttonBar}>
+          <div className={classes.buttonBarSpacer} />
+          {buttons}
         </div>
       </div>
-    </Modal>
+    </MaterialUiModal>
   );
 };
 
-export default DirectoryModal;
+export default Modal;

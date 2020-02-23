@@ -12,10 +12,10 @@ const useStyles = makeStyles({
 });
 
 const App: React.FC = () => {
-  const styles = useStyles();
+  const classes = useStyles();
   return (
     <Provider store={store}>
-      <div className={styles.root}>
+      <div className={classes.root}>
         <CssBaseline />
         <Router />
       </div>

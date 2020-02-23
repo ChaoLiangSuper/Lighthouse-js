@@ -1,24 +1,26 @@
-export type availableFieldType = 'string' | 'number' | 'boolean';
+import { fieldType } from './constant';
+
+export type Column = {
+  name: string;
+  type: fieldType;
+  isOptional: boolean;
+  defaultValue: string | number | boolean;
+};
 
 export type DirectoryCollection = {
-  [s: string]: Directory;
+  [directoryName: string]: Directory;
 };
 
 export type Directory = {
   name: string;
-  keysInTable: string[];
-  schema: {
-    name: string;
-    type: availableFieldType;
-    isOptional: boolean;
-    defaultValue: string;
-  }[];
+  columnKeyInMainTable: string[];
+  columns: Column[];
   numOfRecords: number;
 };
 
 export type RecordCollection = {
-  [s: string]: {
-    [s: string]: Record;
+  [directoryName: string]: {
+    [recordKey: string]: Record;
   };
 };
 

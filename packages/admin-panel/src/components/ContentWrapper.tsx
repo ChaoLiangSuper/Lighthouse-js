@@ -13,10 +13,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ContentWrapper: React.FC = ({ children }) => {
-  const styles = useStyles();
+  const classes = useStyles();
   return (
-    <div className={styles.content}>
-      <div className={styles.navigationSpacer} />
+    <div className={classes.content}>
+      <div className={classes.navigationSpacer} />
       {children}
     </div>
   );

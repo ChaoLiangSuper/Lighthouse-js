@@ -1,146 +1,168 @@
 import _ from 'lodash';
-import React from 'react';
-import Modal from '@material-ui/core/Modal';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Directory, availableFieldType } from '../../types';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
-import Radio from '@material-ui/core/Radio';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import CloseIcon from '@material-ui/icons/Close';
-import { fieldTypes } from '../../config';
+import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import clsx from 'clsx';
+import Modal from '../Modal';
+import { Column } from '../../types';
+import { fieldType, fieldTypeMapping } from '../../constant';
 
 interface ConfigModalProps {
   open: boolean;
   onClose: () => void;
-  data: Directory;
+  data: Column | null;
 }
 
-const useState = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  paper: {
-    position: 'absolute',
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(2, 4, 3),
-    borderRadius: 4,
-    width: `calc(100vw - ${theme.spacing(20)}px)`,
-    height: `calc(100vh - ${theme.spacing(20)}px)`
-  },
-  titleBar: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  title: {
-    flexGrow: 1
-  },
-  schemaSection: {
-    padding: theme.spacing(3)
-  },
-  schemaField: {
-    padding: `${theme.spacing(1)}px 0`
-  },
-  textField: {
-    width: '100%'
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: `0px ${theme.spacing()}px`
   }
+  // nextButton: {
+  //   color: 'white',
+  //   backgroundColor: '#30475e'
+  // }
 }));
 
 const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, data }) => {
-  const classes = useState();
+  const classes = useStyles();
+  const [state, setState] = useState(data);
 
-  const generateDefaultValue = (type: availableFieldType, defaultValue: string) => {
+  useEffect(() => {
+    setState(data);
+  }, [data]);
+
+  if (state === null) {
+    return null;
+  }
+
+  console.log({ state, data });
+
+  const generateDefaultValue = (type: fieldType) => {
     switch (type) {
-      case 'string':
-      case 'number':
+      case fieldType.BOOLEAN:
         return (
           <TextField
-            label="Default Value"
+            select
+            label="Default value"
+            helperText="The default value for this column"
             variant="outlined"
-            size="small"
-            className={classes.textField}
-            value={defaultValue}
+            value={state.defaultValue === '' ? '' : (state.defaultValue as boolean) ? 1 : 0}
+            onChange={({ target }) =>
+              setState({
+                ...state,
+                defaultValue: Boolean(target.value)
+              })
+            }
+            fullWidth
+          >
+            <MenuItem value={1}>Yes</MenuItem>
+            <MenuItem value={0}>No</MenuItem>
+          </TextField>
+        );
+      case fieldType.NUMBER:
+        const isError = state.defaultValue !== '' && _.isNaN(Number(state.defaultValue));
+        return (
+          <TextField
+            label="Default value"
+            helperText={isError ? 'The value must be a number' : 'The default value for this column'}
+            variant="outlined"
+            value={state.defaultValue}
+            onChange={({ target }) =>
+              setState({
+                ...state,
+                defaultValue: target.value
+              })
+            }
+            fullWidth
+            error={isError}
           />
         );
-      case 'boolean':
+      case fieldType.STRING:
         return (
-          <>
-            <FormControlLabel value="Yes" checked={defaultValue === 'Yes'} control={<Radio />} label="Yes" />
-            <FormControlLabel value="No" checked={defaultValue === 'No'} control={<Radio />} label="No" />
-          </>
+          <TextField
+            label="Default value"
+            helperText="The default value for this column"
+            variant="outlined"
+            value={state.defaultValue as string}
+            onChange={({ target }) =>
+              setState({
+                ...state,
+                defaultValue: target.value
+              })
+            }
+            fullWidth
+          />
         );
       default:
         return null;
     }
   };
 
-  if (data === null) {
-    return null;
-  }
-
   return (
-    <Modal open={open} onClose={onClose} className={classes.root}>
-      <div className={classes.paper}>
-        <div className={classes.titleBar}>
-          <Typography variant="h5" component="span" color="textSecondary" className={classes.title}>
-            {data.name}
-          </Typography>
-          <IconButton>
-            <CloseIcon onClick={onClose} />
-          </IconButton>
-        </div>
-        <div className={classes.schemaSection}>
-          {_.map(data.schema, (field) => {
-            if (field.name === 'key') {
-              return null;
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Column config"
+      buttons={
+        <>
+          <Button className={classes.button} onClick={onClose}>
+            Cancel
+          </Button>
+          <Button className={classes.button} variant="contained" color="primary">
+            Save
+          </Button>
+          {/* <Button className={clsx(classes.button, classes.nextButton)} variant="contained">
+            Save and next
+          </Button> */}
+        </>
+      }
+    >
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <TextField
+            label="Name"
+            variant="outlined"
+            helperText="Type a name for this column"
+            value={state.name}
+            onChange={({ target }) =>
+              setState({
+                ...state,
+                name: target.value
+              })
             }
-            return (
-              <Grid container spacing={3} className={classes.schemaField}>
-                <Grid item xs={3}>
-                  <TextField
-                    label="Name"
-                    variant="outlined"
-                    size="small"
-                    className={classes.textField}
-                    value={field.name}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    select
-                    label="Type"
-                    variant="outlined"
-                    size="small"
-                    className={classes.textField}
-                    value={field.type}
-                  >
-                    {_.map(fieldTypes, (type) => (
-                      <MenuItem key={type.value} value={type.value}>
-                        {type.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={3}>
-                  {generateDefaultValue(field.type, field.defaultValue)}
-                </Grid>
-                <Grid item xs={3}>
-                  <FormControlLabel
-                    control={<Checkbox color="primary" checked={field.isOptional} value="isOptional" />}
-                    label="This field is optional"
-                  />
-                </Grid>
-              </Grid>
-            );
-          })}
-        </div>
-      </div>
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            select
+            label="Type"
+            helperText="Select a type for this column"
+            variant="outlined"
+            value={state.type}
+            onChange={({ target }) =>
+              setState({
+                ...state,
+                type: target.value as fieldType,
+                defaultValue: ''
+              })
+            }
+            fullWidth
+          >
+            {_.map(fieldType, (type) => (
+              <MenuItem key={type} value={type}>
+                {fieldTypeMapping[type]}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+        <Grid item xs={12}>
+          {generateDefaultValue(state.type)}
+        </Grid>
+      </Grid>
     </Modal>
   );
 };

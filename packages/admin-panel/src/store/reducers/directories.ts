@@ -1,44 +1,39 @@
 import { DirectoryAction } from '../actions';
 import { DirectoryCollection } from '../../types';
+import { fieldType } from '../../constant';
 
 const initialState: DirectoryCollection = {
   directory1: {
     name: 'directory1',
-    keysInTable: ['key', 'column1', 'column2', 'column3'],
-    schema: [
-      {
-        name: 'key',
-        type: 'string',
-        isOptional: false,
-        defaultValue: ''
-      },
+    columnKeyInMainTable: ['column1', 'column2', 'column3'],
+    columns: [
       {
         name: 'column1',
-        type: 'boolean',
+        type: fieldType.BOOLEAN,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column2',
-        type: 'number',
+        type: fieldType.NUMBER,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column3',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column4',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column5',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       }
@@ -47,41 +42,35 @@ const initialState: DirectoryCollection = {
   },
   directory2: {
     name: 'directory2',
-    keysInTable: ['key', 'column1', 'column2'],
-    schema: [
-      {
-        name: 'key',
-        type: 'string',
-        isOptional: false,
-        defaultValue: ''
-      },
+    columnKeyInMainTable: ['column1', 'column2'],
+    columns: [
       {
         name: 'column1',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column2',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column3',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column4',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       },
       {
         name: 'column5',
-        type: 'string',
+        type: fieldType.STRING,
         isOptional: true,
         defaultValue: ''
       }

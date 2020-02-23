@@ -25,22 +25,19 @@ interface DirectoryViewProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: 20
-  },
   titleBar: {
-    padding: `${theme.spacing(3)}px ${theme.spacing()}px`,
+    padding: `0px ${theme.spacing(2)}px ${theme.spacing(3)}px `,
     display: 'flex',
     justifyItems: 'center'
   },
   title: {
     flexGrow: 1
   },
-  row: {
-    '&:hover': {
-      background: theme.palette.grey[300],
-      cursor: 'pointer'
-    }
+  navLink: {
+    padding: theme.spacing(2)
+  },
+  pointer: {
+    cursor: 'pointer'
   }
 }));
 
@@ -48,7 +45,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   const classes = useStyles();
   const history = useHistory();
   const { directoryName } = useParams<urlParams>();
-  const [isOpen, setOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const [record, setRecord] = useState<Record | null>(null);
 
   if (_.isUndefined(config)) {
@@ -57,57 +54,58 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
 
   return (
     <Page>
-      <div className={classes.root}>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link color="inherit" href="/">
-            Dashboard
-          </Link>
-          <Typography color="textPrimary">{config.name}</Typography>
-        </Breadcrumbs>
-        <div className={classes.titleBar}>
-          <Typography variant="h4" component="span" className={classes.title}>
-            {config.name}{' '}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            disableElevation
-            onClick={() => history.push(`config/${directoryName}`)}
-          >
-            Edit
-          </Button>
-        </div>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {_.map(config.keysInTable, (columnName) => (
-                <TableCell key={columnName}>{columnName}</TableCell>
+      <Breadcrumbs aria-label="breadcrumb" className={classes.navLink}>
+        <Link color="inherit" href="/">
+          Dashboard
+        </Link>
+        <Typography color="textPrimary">{config.name}</Typography>
+      </Breadcrumbs>
+      <div className={classes.titleBar}>
+        <Typography variant="h4" component="span" className={classes.title}>
+          {config.name}{' '}
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          disableElevation
+          onClick={() => history.push(`config/${directoryName}`)}
+        >
+          Edit
+        </Button>
+      </div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Key</TableCell>
+            {_.map(config.columnKeyInMainTable, (columnName) => (
+              <TableCell key={columnName}>{columnName}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {_.map(records, (record) => (
+            <TableRow
+              hover
+              key={record.key}
+              onClick={() => {
+                setModalOpen(true);
+                setRecord(record);
+              }}
+              className={classes.pointer}
+            >
+              <TableCell>{record.key}</TableCell>
+              {_.map(config.columnKeyInMainTable, (columnName) => (
+                <TableCell key={columnName}>{record[columnName]}</TableCell>
               ))}
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {_.map(records, (record) => (
-              <TableRow
-                key={record.key}
-                className={classes.row}
-                onClick={() => {
-                  setOpen(true);
-                  setRecord(record);
-                }}
-              >
-                {_.map(config.keysInTable, (columnName) => (
-                  <TableCell key={columnName}>{record[columnName]}</TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+        </TableBody>
+      </Table>
       <DirectoryModal
-        open={isOpen}
+        open={isModalOpen}
         onClose={() => {
-          setOpen(false);
+          setModalOpen(false);
           setRecord(null);
         }}
         data={record}
