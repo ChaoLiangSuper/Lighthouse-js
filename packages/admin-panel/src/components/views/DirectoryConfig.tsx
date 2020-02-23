@@ -25,6 +25,7 @@ import ConfigModal from '../modals/ConfigModal';
 
 interface DirectoryConfigProps {
   directories: DirectoryCollection;
+  updateDirectoryColumns: (name: string) => (columns: Column[]) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -47,13 +48,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories }) => {
+const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDirectoryColumns }) => {
   const classes = useStyles();
   const history = useHistory();
   const params = useParams<urlParams>();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const currentDirectory = directories[params.directoryName];
+
+  console.log(selectedIndex);
 
   return (
     <Page>
@@ -92,11 +95,11 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(currentDirectory.columns, (column) => (
+              {_.map(currentDirectory.columns, (column, index) => (
                 <TableRow
                   key={column.name}
                   onClick={() => {
-                    setSelectedColumn(column);
+                    setSelectedIndex(index);
                     setModalOpen(true);
                   }}
                   hover
@@ -119,15 +122,29 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories }) => {
       <ConfigModal
         open={isModalOpen}
         onClose={() => {
-          setSelectedColumn(null);
+          setSelectedIndex(0);
           setModalOpen(false);
         }}
-        data={selectedColumn}
+        columns={currentDirectory.columns}
+        defaultIndex={selectedIndex}
+        updateDirectoryColumns={updateDirectoryColumns(currentDirectory.name)}
       />
     </Page>
   );
 };
 
-export default connect(({ directories }: Store) => ({
-  directories
-}))(DirectoryConfig);
+export default connect(
+  ({ directories }: Store) => ({
+    directories
+  }),
+  (dispatch) => ({
+    updateDirectoryColumns: (name: string) => (columns: Column[]) =>
+      dispatch({
+        type: 'DIRECTORY_COLUMNS_UPDATE',
+        data: {
+          name,
+          columns
+        }
+      })
+  })
+)(DirectoryConfig);

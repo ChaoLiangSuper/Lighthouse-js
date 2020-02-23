@@ -13,32 +13,40 @@ import { fieldType, fieldTypeMapping } from '../../constant';
 interface ConfigModalProps {
   open: boolean;
   onClose: () => void;
-  data: Column | null;
+  columns: Column[];
+  defaultIndex: number;
+  updateDirectoryColumns: (columns: Column[]) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: `0px ${theme.spacing()}px`
+  },
+  nextButton: {
+    color: 'white',
+    backgroundColor: '#30475e'
   }
-  // nextButton: {
-  //   color: 'white',
-  //   backgroundColor: '#30475e'
-  // }
 }));
 
-const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, data }) => {
+const emptyColumnState: Column = {
+  name: '',
+  type: fieldType.STRING,
+  isOptional: false,
+  defaultValue: ''
+};
+
+const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defaultIndex, updateDirectoryColumns }) => {
   const classes = useStyles();
-  const [state, setState] = useState(data);
+  const [currentIndex, setCurrentIndex] = useState(defaultIndex);
+  const [state, setState] = useState(columns[currentIndex]);
 
   useEffect(() => {
-    setState(data);
-  }, [data]);
+    setState(columns[currentIndex] || emptyColumnState);
+  }, [currentIndex, columns]);
 
-  if (state === null) {
-    return null;
-  }
-
-  console.log({ state, data });
+  useEffect(() => {
+    setCurrentIndex(defaultIndex);
+  }, [defaultIndex]);
 
   const generateDefaultValue = (type: fieldType) => {
     switch (type) {
@@ -101,6 +109,12 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, data }) => {
     }
   };
 
+  const saveColumns = () => {
+    const newColumns = [...columns];
+    newColumns[currentIndex] = state;
+    updateDirectoryColumns(newColumns);
+  };
+
   return (
     <Modal
       open={open}
@@ -111,12 +125,27 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, data }) => {
           <Button className={classes.button} onClick={onClose}>
             Cancel
           </Button>
-          <Button className={classes.button} variant="contained" color="primary">
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              saveColumns();
+              onClose();
+            }}
+          >
             Save
           </Button>
-          {/* <Button className={clsx(classes.button, classes.nextButton)} variant="contained">
+          <Button
+            className={clsx(classes.button, classes.nextButton)}
+            variant="contained"
+            onClick={() => {
+              saveColumns();
+              setCurrentIndex(currentIndex + 1);
+            }}
+          >
             Save and next
-          </Button> */}
+          </Button>
         </>
       }
     >

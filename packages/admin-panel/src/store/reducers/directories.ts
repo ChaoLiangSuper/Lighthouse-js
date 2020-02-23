@@ -81,10 +81,13 @@ const initialState: DirectoryCollection = {
 
 const reducer = (state = initialState, action: DirectoryAction) => {
   switch (action.type) {
-    case 'DIRECTORY_UPDATE':
+    case 'DIRECTORY_COLUMNS_UPDATE':
       return {
         ...initialState,
-        ...action.data
+        [action.data.name]: {
+          ...initialState[action.data.name],
+          columns: action.data.columns
+        }
       };
     default:
       return state;
