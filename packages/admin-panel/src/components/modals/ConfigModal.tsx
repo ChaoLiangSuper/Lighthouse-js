@@ -115,6 +115,10 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defau
     updateDirectoryColumns(newColumns);
   };
 
+  const validateState = () => {
+    return _.isEmpty(state.name) || (state.type === fieldType.NUMBER && _.isNaN(state.defaultValue));
+  };
+
   return (
     <Modal
       open={open}
@@ -126,6 +130,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defau
             Cancel
           </Button>
           <Button
+            disabled={validateState()}
             className={classes.button}
             variant="contained"
             color="primary"
@@ -137,6 +142,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defau
             Save
           </Button>
           <Button
+            disabled={validateState()}
             className={clsx(classes.button, classes.nextButton)}
             variant="contained"
             onClick={() => {
