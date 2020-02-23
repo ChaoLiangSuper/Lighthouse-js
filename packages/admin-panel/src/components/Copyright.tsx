@@ -11,9 +11,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Copyright: React.FC = () => {
-  const styles = useStyles();
+  const classes = useStyles();
   return (
-    <footer className={styles.footer}>
+    <footer className={classes.footer}>
       <Container maxWidth="sm">
         <Typography variant="body2" color="textSecondary" align="center">
           {'Copyright © '}

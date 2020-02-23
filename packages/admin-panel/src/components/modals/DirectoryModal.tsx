@@ -1,18 +1,20 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
-import { Record } from '../types';
+import { Record } from '../../types';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 import CloseIcon from '@material-ui/icons/Close';
 
-interface DirectoryModal {
+interface DirectoryModalProps {
   open: boolean;
   onClose: () => void;
   data: Record | null;
 }
 
-const useState = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
@@ -32,11 +34,12 @@ const useState = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1
-  }
+  },
+  config: {}
 }));
 
-const DirectoryModal: React.FC<DirectoryModal> = ({ open, onClose, data }) => {
-  const classes = useState();
+const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose, data }) => {
+  const classes = useStyles();
 
   if (data === null) {
     return null;
@@ -47,11 +50,24 @@ const DirectoryModal: React.FC<DirectoryModal> = ({ open, onClose, data }) => {
       <div className={classes.paper}>
         <div className={classes.titleBar}>
           <Typography variant="h5" component="span" color="textSecondary" className={classes.title}>
-            {data.key}
+            Key: {data.key}
           </Typography>
-          <IconButton>
-            <CloseIcon onClick={onClose} />
+          <IconButton onClick={onClose}>
+            <CloseIcon />
           </IconButton>
+        </div>
+        <div className={classes.config}>
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <TextField />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField />
+            </Grid>
+          </Grid>
         </div>
       </div>
     </Modal>

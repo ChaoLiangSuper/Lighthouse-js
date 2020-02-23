@@ -1,77 +1,78 @@
 import { DirectoryAction } from '../actions';
 import { DirectoryCollection } from '../../types';
+import { fieldType } from '../../constant';
 
 const initialState: DirectoryCollection = {
   directory1: {
     name: 'directory1',
-    keysInTable: ['key', 'column1', 'column2', 'column3'],
-    schema: [
+    columnKeyInMainTable: ['column1', 'column2', 'column3'],
+    columns: [
       {
-        column: 'key',
-        type: 'string',
-        isOptional: false
+        name: 'column1',
+        type: fieldType.BOOLEAN,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column1',
-        type: 'string',
-        isOptional: true
+        name: 'column2',
+        type: fieldType.NUMBER,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column2',
-        type: 'string',
-        isOptional: true
+        name: 'column3',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column3',
-        type: 'string',
-        isOptional: true
+        name: 'column4',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column4',
-        type: 'string',
-        isOptional: true
-      },
-      {
-        column: 'column5',
-        type: 'string',
-        isOptional: true
+        name: 'column5',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       }
     ],
     numOfRecords: 1
   },
   directory2: {
     name: 'directory2',
-    keysInTable: ['key', 'column1', 'column2'],
-    schema: [
+    columnKeyInMainTable: ['column1', 'column2'],
+    columns: [
       {
-        column: 'key',
-        type: 'string',
-        isOptional: false
+        name: 'column1',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column1',
-        type: 'string',
-        isOptional: true
+        name: 'column2',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column2',
-        type: 'string',
-        isOptional: true
+        name: 'column3',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column3',
-        type: 'string',
-        isOptional: true
+        name: 'column4',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       },
       {
-        column: 'column4',
-        type: 'string',
-        isOptional: true
-      },
-      {
-        column: 'column5',
-        type: 'string',
-        isOptional: true
+        name: 'column5',
+        type: fieldType.STRING,
+        isOptional: true,
+        defaultValue: ''
       }
     ],
     numOfRecords: 0
