@@ -78,8 +78,8 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
         <TableHead>
           <TableRow>
             <TableCell>Key</TableCell>
-            {_.map(config.columnKeyInMainTable, (columnName) => (
-              <TableCell key={columnName}>{columnName}</TableCell>
+            {_.map(config.columns, ({ name }) => (
+              <TableCell key={name}>{name}</TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -95,8 +95,8 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
               className={classes.pointer}
             >
               <TableCell>{record.key}</TableCell>
-              {_.map(config.columnKeyInMainTable, (columnName) => (
-                <TableCell key={columnName}>{record[columnName]}</TableCell>
+              {_.map(config.columns, ({ name }) => (
+                <TableCell key={name}>{record[name]}</TableCell>
               ))}
             </TableRow>
           ))}

@@ -16,12 +16,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import Checkbox from '@material-ui/core/Checkbox';
 import HorizontalContainer from '../HorizontalContainer';
 import TypeChip from '../TypeChip';
-import { Store, DirectoryCollection, Column } from '../../types';
+import { Store, DirectoryCollection, Column, ValueType } from '../../types';
 import { urlParams } from '../../router';
 import ConfigModal from '../modals/ConfigModal';
+import { fieldType } from '../../constant';
 
 interface DirectoryConfigProps {
   directories: DirectoryCollection;
@@ -56,7 +56,20 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
   const [selectedIndex, setSelectedIndex] = useState(0);
   const currentDirectory = directories[params.directoryName];
 
-  console.log(selectedIndex);
+  console.log({ directories, currentDirectory });
+
+  const renderDefaultValue = (type: fieldType, defaultValue: ValueType) => {
+    if (defaultValue === '') return '─';
+    switch (type) {
+      case fieldType.BOOLEAN:
+        return defaultValue ? 'Yes' : 'No';
+      case fieldType.STRING:
+      case fieldType.NUMBER:
+        return defaultValue;
+      default:
+        return null;
+    }
+  };
 
   return (
     <Page>
@@ -91,7 +104,7 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
               <TableRow>
                 <TableCell>Field name</TableCell>
                 <TableCell>Field type</TableCell>
-                <TableCell>Display on the main table?</TableCell>
+                <TableCell>Default value</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -109,9 +122,7 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
                   <TableCell>
                     <TypeChip type={column.type} />
                   </TableCell>
-                  <TableCell>
-                    <Checkbox checked={currentDirectory.columnKeyInMainTable.includes(column.name)} />
-                  </TableCell>
+                  <TableCell>{renderDefaultValue(column.type, column.defaultValue)}</TableCell>
                 </TableRow>
               ))}
               <TableRow></TableRow>

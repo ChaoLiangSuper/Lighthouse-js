@@ -71,7 +71,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defau
           </TextField>
         );
       case fieldType.NUMBER:
-        const isError = state.defaultValue !== '' && _.isNaN(Number(state.defaultValue));
+        const isError = _.isNaN(Number(state.defaultValue));
         return (
           <TextField
             label="Default value"
@@ -116,7 +116,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defau
   };
 
   const validateState = () => {
-    return _.isEmpty(state.name) || (state.type === fieldType.NUMBER && _.isNaN(state.defaultValue));
+    return _.isEmpty(state.name) || (state.type === fieldType.NUMBER && _.isNaN(Number(state.defaultValue)));
   };
 
   return (
