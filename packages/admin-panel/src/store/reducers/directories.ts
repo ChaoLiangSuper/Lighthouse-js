@@ -5,7 +5,6 @@ import { fieldType } from '../../constant';
 const initialState: DirectoryCollection = {
   directory1: {
     name: 'directory1',
-    columnKeyInMainTable: ['column1', 'column2', 'column3'],
     columns: [
       {
         name: 'column1',
@@ -42,7 +41,6 @@ const initialState: DirectoryCollection = {
   },
   directory2: {
     name: 'directory2',
-    columnKeyInMainTable: ['column1', 'column2'],
     columns: [
       {
         name: 'column1',
@@ -81,10 +79,13 @@ const initialState: DirectoryCollection = {
 
 const reducer = (state = initialState, action: DirectoryAction) => {
   switch (action.type) {
-    case 'DIRECTORY_UPDATE':
+    case 'DIRECTORY_COLUMNS_UPDATE':
       return {
         ...initialState,
-        ...action.data
+        [action.data.name]: {
+          ...initialState[action.data.name],
+          columns: action.data.columns
+        }
       };
     default:
       return state;

@@ -16,15 +16,16 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import Checkbox from '@material-ui/core/Checkbox';
 import HorizontalContainer from '../HorizontalContainer';
 import TypeChip from '../TypeChip';
-import { Store, DirectoryCollection, Column } from '../../types';
+import { Store, DirectoryCollection, Column, ValueType } from '../../types';
 import { urlParams } from '../../router';
 import ConfigModal from '../modals/ConfigModal';
+import { fieldType } from '../../constant';
 
 interface DirectoryConfigProps {
   directories: DirectoryCollection;
+  updateDirectoryColumns: (name: string) => (columns: Column[]) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -47,13 +48,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories }) => {
+const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDirectoryColumns }) => {
   const classes = useStyles();
   const history = useHistory();
   const params = useParams<urlParams>();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const currentDirectory = directories[params.directoryName];
+
+  console.log({ directories, currentDirectory });
+
+  const renderDefaultValue = (type: fieldType, defaultValue: ValueType) => {
+    if (defaultValue === '') return '─';
+    switch (type) {
+      case fieldType.BOOLEAN:
+        return defaultValue ? 'Yes' : 'No';
+      case fieldType.STRING:
+      case fieldType.NUMBER:
+        return defaultValue;
+      default:
+        return null;
+    }
+  };
 
   return (
     <Page>
@@ -88,15 +104,15 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories }) => {
               <TableRow>
                 <TableCell>Field name</TableCell>
                 <TableCell>Field type</TableCell>
-                <TableCell>Display on the main table?</TableCell>
+                <TableCell>Default value</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(currentDirectory.columns, (column) => (
+              {_.map(currentDirectory.columns, (column, index) => (
                 <TableRow
                   key={column.name}
                   onClick={() => {
-                    setSelectedColumn(column);
+                    setSelectedIndex(index);
                     setModalOpen(true);
                   }}
                   hover
@@ -106,9 +122,7 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories }) => {
                   <TableCell>
                     <TypeChip type={column.type} />
                   </TableCell>
-                  <TableCell>
-                    <Checkbox checked={currentDirectory.columnKeyInMainTable.includes(column.name)} />
-                  </TableCell>
+                  <TableCell>{renderDefaultValue(column.type, column.defaultValue)}</TableCell>
                 </TableRow>
               ))}
               <TableRow></TableRow>
@@ -119,15 +133,29 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories }) => {
       <ConfigModal
         open={isModalOpen}
         onClose={() => {
-          setSelectedColumn(null);
+          setSelectedIndex(0);
           setModalOpen(false);
         }}
-        data={selectedColumn}
+        columns={currentDirectory.columns}
+        defaultIndex={selectedIndex}
+        updateDirectoryColumns={updateDirectoryColumns(currentDirectory.name)}
       />
     </Page>
   );
 };
 
-export default connect(({ directories }: Store) => ({
-  directories
-}))(DirectoryConfig);
+export default connect(
+  ({ directories }: Store) => ({
+    directories
+  }),
+  (dispatch) => ({
+    updateDirectoryColumns: (name: string) => (columns: Column[]) =>
+      dispatch({
+        type: 'DIRECTORY_COLUMNS_UPDATE',
+        data: {
+          name,
+          columns
+        }
+      })
+  })
+)(DirectoryConfig);

@@ -1,4 +1,4 @@
-import { User, Directory, Record } from '../types';
+import { User, Record, Column } from '../types';
 
 export type userActionType = 'LOGIN' | 'LOGOUT';
 
@@ -7,11 +7,12 @@ export interface UserAction {
   data: User;
 }
 
-export type directoryActionType = 'DIRECTORY_ADD' | 'DIRECTORY_UPDATE' | 'DIRECTORY_DELETE';
-
 export interface DirectoryAction {
-  type: directoryActionType;
-  data: Directory;
+  type: 'DIRECTORY_COLUMNS_UPDATE';
+  data: {
+    name: string;
+    columns: Column[];
+  };
 }
 
 export type recordActionType = 'RECORD_ADD' | 'RECORD_UPDATE' | 'RECORD_DELETE';

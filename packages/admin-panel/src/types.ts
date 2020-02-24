@@ -1,10 +1,12 @@
 import { fieldType } from './constant';
 
+export type ValueType = string | number | boolean;
+
 export type Column = {
   name: string;
   type: fieldType;
   isOptional: boolean;
-  defaultValue: string | number | boolean;
+  defaultValue: ValueType;
 };
 
 export type DirectoryCollection = {
@@ -13,7 +15,6 @@ export type DirectoryCollection = {
 
 export type Directory = {
   name: string;
-  columnKeyInMainTable: string[];
   columns: Column[];
   numOfRecords: number;
 };
