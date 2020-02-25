@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
 import Page from '../Page';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { useParams, useHistory, Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -48,11 +49,17 @@ const useStyles = makeStyles((theme) => ({
   pointer: {
     cursor: 'pointer'
   },
+  configRow: {
+    height: '60px',
+    '& > td': {
+      padding: '0px 16px'
+    }
+  },
   configColumn: {
     width: '30%'
   },
   deleteButton: {
-    '&:hover': {
+    '& :hover': {
       color: theme.palette.secondary.dark
     }
   }
@@ -126,7 +133,7 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
                     setModalOpen(true);
                   }}
                   hover
-                  className={classes.pointer}
+                  className={clsx(classes.pointer, classes.configRow)}
                 >
                   <TableCell>{column.name}</TableCell>
                   <TableCell>
@@ -149,6 +156,18 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
                   </TableCell>
                 </TableRow>
               ))}
+              <TableRow
+                hover
+                className={clsx(classes.pointer, classes.configRow)}
+                onClick={() => {
+                  setSelectedIndex(currentDirectory.columns.length);
+                  setModalOpen(true);
+                }}
+              >
+                <TableCell colSpan={4} align="center">
+                  Add new column
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </div>
