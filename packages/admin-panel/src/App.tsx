@@ -13,6 +13,7 @@ const useStyles = makeStyles({
 
 const App: React.FC = () => {
   const classes = useStyles();
+  console.log('APP render');
   return (
     <Provider store={store}>
       <div className={classes.root}>

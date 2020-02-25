@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
-import { Redirect, RouteComponentProps, useHistory, useParams } from 'react-router-dom';
+import { Redirect, RouteComponentProps, useHistory, useParams, Link as RouterLink } from 'react-router-dom';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
@@ -55,7 +55,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   return (
     <Page>
       <Breadcrumbs aria-label="breadcrumb" className={classes.navLink}>
-        <Link color="inherit" href="/">
+        <Link color="inherit" component={RouterLink} to="/">
           Dashboard
         </Link>
         <Typography color="textPrimary">{config.name}</Typography>
