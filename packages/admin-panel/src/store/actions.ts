@@ -15,9 +15,16 @@ export interface DirectoryAction {
   };
 }
 
-export type recordActionType = 'RECORD_ADD' | 'RECORD_UPDATE' | 'RECORD_DELETE';
-
-export interface RecordAction {
-  type: recordActionType;
-  data: Record;
+export enum recordActionType {
+  RECORD_ADD = 'RECORD_ADD',
+  RECORD_UPDATE = 'RECORD_UPDATE',
+  RECORD_DELETE = 'RECORD_DELETE'
 }
+
+export type RecordAction = {
+  type: recordActionType.RECORD_UPDATE;
+  data: {
+    directoryName: string;
+    updatedField: Record;
+  };
+};

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import { Redirect, RouteComponentProps, useHistory, useParams, Link as RouterLink } from 'react-router-dom';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
@@ -22,6 +23,7 @@ interface DirectoryViewProps {
   records: {
     [s: string]: Record;
   };
+  updateRecord: (key: string) => (updatedField: Partial<Record>) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -38,10 +40,16 @@ const useStyles = makeStyles((theme) => ({
   },
   pointer: {
     cursor: 'pointer'
+  },
+  recordRow: {
+    height: '60px',
+    '& > td': {
+      padding: '0px 16px'
+    }
   }
 }));
 
-const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
+const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records, updateRecord }) => {
   const classes = useStyles();
   const history = useHistory();
   const { directoryName } = useParams<urlParams>();
@@ -51,6 +59,8 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   if (_.isUndefined(config)) {
     return <Redirect to="/" />;
   }
+
+  const updateRecordByDirectoryName = updateRecord(config.name);
 
   return (
     <Page>
@@ -92,7 +102,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
                 setModalOpen(true);
                 setRecord(record);
               }}
-              className={classes.pointer}
+              className={clsx(classes.pointer, classes.recordRow)}
             >
               <TableCell>{record.key}</TableCell>
               {_.map(config.columns, ({ name }) => (
@@ -100,6 +110,18 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
               ))}
             </TableRow>
           ))}
+          <TableRow
+            hover
+            className={clsx(classes.pointer, classes.recordRow)}
+            onClick={() => {
+              setModalOpen(true);
+              setRecord(null);
+            }}
+          >
+            <TableCell colSpan={config.columns.length + 1} align="center">
+              Add new record
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
       <DirectoryModal
@@ -109,12 +131,26 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
           setRecord(null);
         }}
         data={record}
+        columns={config.columns}
+        updateRecordByDirectoryName={updateRecordByDirectoryName}
       />
     </Page>
   );
 };
 
-export default connect(({ directories, records }: Store, { match }: RouteComponentProps<urlParams>) => ({
-  config: directories[match.params.directoryName],
-  records: records[match.params.directoryName]
-}))(DirectoryView);
+export default connect(
+  ({ directories, records }: Store, { match }: RouteComponentProps<urlParams>) => ({
+    config: directories[match.params.directoryName],
+    records: records[match.params.directoryName]
+  }),
+  (dispatch) => ({
+    updateRecord: (directoryName: string) => (updatedField: Partial<Record>) =>
+      dispatch({
+        type: 'RECORD_UPDATE',
+        data: {
+          directoryName,
+          updatedField
+        }
+      })
+  })
+)(DirectoryView);

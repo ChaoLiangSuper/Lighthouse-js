@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Page from '../Page';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
-import { useParams, useHistory, Link as RouterLink } from 'react-router-dom';
+import { useParams, useHistory, Link as RouterLink, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
@@ -72,6 +72,11 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const currentDirectory = directories[params.directoryName];
+
+  if (_.isUndefined(currentDirectory)) {
+    return <Redirect to="/" />;
+  }
+
   const updateCurrentDirectoryColumns = updateDirectoryColumns(currentDirectory.name);
 
   const renderDefaultValue = (type: fieldType, defaultValue: ValueType) => {
