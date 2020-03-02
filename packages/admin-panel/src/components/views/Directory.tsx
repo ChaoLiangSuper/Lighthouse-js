@@ -23,7 +23,6 @@ interface DirectoryViewProps {
   records: {
     [s: string]: Record;
   };
-  updateRecord: (key: string) => (updatedField: Partial<Record>) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -49,18 +48,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records, updateRecord }) => {
+const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   const classes = useStyles();
   const history = useHistory();
   const { directoryName } = useParams<urlParams>();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [record, setRecord] = useState<Record | null>(null);
+  const [selectedRecordKey, setSelectedRecordKey] = useState<string | null>(null);
 
   if (_.isUndefined(config)) {
     return <Redirect to="/" />;
   }
-
-  const updateRecordByDirectoryName = updateRecord(config.name);
 
   return (
     <Page>
@@ -100,7 +97,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records, updateRe
               key={record.key}
               onClick={() => {
                 setModalOpen(true);
-                setRecord(record);
+                setSelectedRecordKey(record.key);
               }}
               className={clsx(classes.pointer, classes.recordRow)}
             >
@@ -115,7 +112,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records, updateRe
             className={clsx(classes.pointer, classes.recordRow)}
             onClick={() => {
               setModalOpen(true);
-              setRecord(null);
+              setSelectedRecordKey(null);
             }}
           >
             <TableCell colSpan={config.columns.length + 1} align="center">
@@ -128,29 +125,15 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records, updateRe
         open={isModalOpen}
         onClose={() => {
           setModalOpen(false);
-          setRecord(null);
+          setSelectedRecordKey(null);
         }}
-        data={record}
-        columns={config.columns}
-        updateRecordByDirectoryName={updateRecordByDirectoryName}
+        recordKey={selectedRecordKey}
       />
     </Page>
   );
 };
 
-export default connect(
-  ({ directories, records }: Store, { match }: RouteComponentProps<urlParams>) => ({
-    config: directories[match.params.directoryName],
-    records: records[match.params.directoryName]
-  }),
-  (dispatch) => ({
-    updateRecord: (directoryName: string) => (updatedField: Partial<Record>) =>
-      dispatch({
-        type: 'RECORD_UPDATE',
-        data: {
-          directoryName,
-          updatedField
-        }
-      })
-  })
-)(DirectoryView);
+export default connect(({ directories, recordCollection }: Store, { match }: RouteComponentProps<urlParams>) => ({
+  config: directories[match.params.directoryName],
+  records: recordCollection[match.params.directoryName]
+}))(DirectoryView);

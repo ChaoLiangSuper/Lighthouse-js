@@ -37,6 +37,6 @@ export type User = {
 
 export type Store = {
   directories: DirectoryCollection;
-  records: RecordCollection;
+  recordCollection: RecordCollection;
   user: User;
 };
