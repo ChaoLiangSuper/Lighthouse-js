@@ -1,4 +1,4 @@
-import { RecordAction } from '../actions';
+import { RecordAction, recordActionType } from '../actions';
 import { RecordCollection } from '../../types';
 
 const initialState: RecordCollection = {
@@ -20,10 +20,14 @@ const initialState: RecordCollection = {
 
 const reducer = (state = initialState, action: RecordAction) => {
   switch (action.type) {
-    case 'RECORD_ADD':
+    case recordActionType.RECORD_UPDATE:
+      const directoryName = action.data.directoryName;
       return {
         ...initialState,
-        ...action.data
+        [directoryName]: {
+          ...initialState[directoryName],
+          [action.data.updatedField.key]: action.data.updatedField
+        }
       };
     default:
       return state;

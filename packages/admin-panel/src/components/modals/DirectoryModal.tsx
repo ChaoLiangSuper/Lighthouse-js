@@ -1,77 +1,114 @@
-import React from 'react';
-import Modal from '@material-ui/core/Modal';
+import _ from 'lodash';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Record } from '../../types';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import CloseIcon from '@material-ui/icons/Close';
+import Button from '@material-ui/core/Button';
+import { urlParams } from '../../router';
+import { RecordCollection, Store, Record, DirectoryCollection } from '../../types';
+import { recordActionType } from '../../store/actions';
+import Modal from '../Modal';
 
 interface DirectoryModalProps {
   open: boolean;
   onClose: () => void;
-  data: Record | null;
+  directories: DirectoryCollection;
+  recordCollection: RecordCollection;
+  recordKey: string | null;
+  updateRecord: (directoryName: string) => (updatedField: Record) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  paper: {
-    position: 'absolute',
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(2, 4, 3),
-    borderRadius: 4,
-    width: `calc(100vw - ${theme.spacing(20)}px)`,
-    height: `calc(100vh - ${theme.spacing(20)}px)`
-  },
-  titleBar: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  title: {
-    flexGrow: 1
-  },
-  config: {}
+  button: {
+    margin: `0px ${theme.spacing()}px`
+  }
 }));
 
-const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose, data }) => {
+const DirectoryModal: React.FC<DirectoryModalProps> = ({
+  open,
+  onClose,
+  directories,
+  recordCollection,
+  recordKey,
+  updateRecord
+}) => {
   const classes = useStyles();
+  const { directoryName } = useParams<urlParams>();
+  const { columns } = directories[directoryName];
+  const record: Record = recordKey ? recordCollection[directoryName][recordKey] : { key: _.uniqueId('new-record-') };
+  const [state, setState] = useState(record);
 
-  if (data === null) {
-    return null;
-  }
+  useEffect(() => {
+    setState(record);
+  }, [record]);
+
+  console.log(state, state);
 
   return (
-    <Modal open={open} onClose={onClose} className={classes.root}>
-      <div className={classes.paper}>
-        <div className={classes.titleBar}>
-          <Typography variant="h5" component="span" color="textSecondary" className={classes.title}>
-            Key: {data.key}
-          </Typography>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <div className={classes.config}>
-          <Grid container spacing={3}>
-            <Grid item xs={4}>
-              <TextField />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField />
-            </Grid>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Record"
+      buttons={
+        <>
+          <Button className={classes.button} onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            disabled={_.isEqual(record, state)}
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              updateRecord(directoryName)(state);
+              onClose();
+            }}
+          >
+            Save
+          </Button>
+        </>
+      }
+    >
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <TextField label="Key" value={recordKey ? recordKey : 'new-record'} variant="outlined" fullWidth disabled />
+        </Grid>
+        {_.map(columns, ({ name }) => (
+          <Grid item xs={6} key={name}>
+            <TextField
+              label={name}
+              value={state[name]}
+              onChange={({ target }) =>
+                setState({
+                  ...state,
+                  [name]: target.value
+                })
+              }
+              variant="outlined"
+              fullWidth
+            />
           </Grid>
-        </div>
-      </div>
+        ))}
+      </Grid>
     </Modal>
   );
 };
 
-export default DirectoryModal;
+export default connect(
+  ({ recordCollection, directories }: Store) => ({
+    recordCollection,
+    directories
+  }),
+  (dispatch) => ({
+    updateRecord: (directoryName: string) => (updatedField: Record) =>
+      dispatch({
+        type: recordActionType.RECORD_UPDATE,
+        data: {
+          directoryName,
+          updatedField
+        }
+      })
+  })
+)(DirectoryModal);

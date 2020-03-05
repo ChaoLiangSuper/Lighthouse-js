@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
-import { Redirect, RouteComponentProps, useHistory, useParams } from 'react-router-dom';
+import clsx from 'clsx';
+import { Redirect, RouteComponentProps, useHistory, useParams, Link as RouterLink } from 'react-router-dom';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
@@ -38,6 +39,12 @@ const useStyles = makeStyles((theme) => ({
   },
   pointer: {
     cursor: 'pointer'
+  },
+  recordRow: {
+    height: '60px',
+    '& > td': {
+      padding: '0px 16px'
+    }
   }
 }));
 
@@ -46,7 +53,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   const history = useHistory();
   const { directoryName } = useParams<urlParams>();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [record, setRecord] = useState<Record | null>(null);
+  const [selectedRecordKey, setSelectedRecordKey] = useState<string | null>(null);
 
   if (_.isUndefined(config)) {
     return <Redirect to="/" />;
@@ -55,7 +62,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
   return (
     <Page>
       <Breadcrumbs aria-label="breadcrumb" className={classes.navLink}>
-        <Link color="inherit" href="/">
+        <Link color="inherit" component={RouterLink} to="/">
           Dashboard
         </Link>
         <Typography color="textPrimary">{config.name}</Typography>
@@ -90,9 +97,9 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
               key={record.key}
               onClick={() => {
                 setModalOpen(true);
-                setRecord(record);
+                setSelectedRecordKey(record.key);
               }}
-              className={classes.pointer}
+              className={clsx(classes.pointer, classes.recordRow)}
             >
               <TableCell>{record.key}</TableCell>
               {_.map(config.columns, ({ name }) => (
@@ -100,21 +107,33 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
               ))}
             </TableRow>
           ))}
+          <TableRow
+            hover
+            className={clsx(classes.pointer, classes.recordRow)}
+            onClick={() => {
+              setModalOpen(true);
+              setSelectedRecordKey(null);
+            }}
+          >
+            <TableCell colSpan={config.columns.length + 1} align="center">
+              Add new record
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
       <DirectoryModal
         open={isModalOpen}
         onClose={() => {
           setModalOpen(false);
-          setRecord(null);
+          setSelectedRecordKey(null);
         }}
-        data={record}
+        recordKey={selectedRecordKey}
       />
     </Page>
   );
 };
 
-export default connect(({ directories, records }: Store, { match }: RouteComponentProps<urlParams>) => ({
+export default connect(({ directories, recordCollection }: Store, { match }: RouteComponentProps<urlParams>) => ({
   config: directories[match.params.directoryName],
-  records: records[match.params.directoryName]
+  records: recordCollection[match.params.directoryName]
 }))(DirectoryView);

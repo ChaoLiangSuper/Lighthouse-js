@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
 import Page from '../Page';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link as RouterLink, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
@@ -17,6 +18,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import HorizontalContainer from '../HorizontalContainer';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import TypeChip from '../TypeChip';
 import { Store, DirectoryCollection, Column, ValueType } from '../../types';
 import { urlParams } from '../../router';
@@ -38,13 +41,27 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.grey[400]
   },
   tableContainer: {
-    width: '100%'
+    width: '75vw'
   },
   navLink: {
     padding: theme.spacing(2)
   },
   pointer: {
     cursor: 'pointer'
+  },
+  configRow: {
+    height: '60px',
+    '& > td': {
+      padding: '0px 16px'
+    }
+  },
+  configColumn: {
+    width: '30%'
+  },
+  deleteButton: {
+    '& :hover': {
+      color: theme.palette.secondary.dark
+    }
   }
 }));
 
@@ -56,7 +73,11 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
   const [selectedIndex, setSelectedIndex] = useState(0);
   const currentDirectory = directories[params.directoryName];
 
-  console.log({ directories, currentDirectory });
+  if (_.isUndefined(currentDirectory)) {
+    return <Redirect to="/" />;
+  }
+
+  const updateCurrentDirectoryColumns = updateDirectoryColumns(currentDirectory.name);
 
   const renderDefaultValue = (type: fieldType, defaultValue: ValueType) => {
     if (defaultValue === '') return '─';
@@ -74,10 +95,10 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
   return (
     <Page>
       <Breadcrumbs aria-label="breadcrumb" className={classes.navLink}>
-        <Link color="inherit" href="/">
+        <Link color="inherit" component={RouterLink} to="/">
           Dashboard
         </Link>
-        <Link color="inherit" href={`/directory/${currentDirectory.name}`}>
+        <Link color="inherit" component={RouterLink} to={`/directory/${currentDirectory.name}`}>
           {currentDirectory.name}
         </Link>
         <Typography color="textPrimary">Schema config</Typography>
@@ -102,9 +123,10 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Field name</TableCell>
-                <TableCell>Field type</TableCell>
-                <TableCell>Default value</TableCell>
+                <TableCell className={classes.configColumn}>Field name</TableCell>
+                <TableCell className={classes.configColumn}>Field type</TableCell>
+                <TableCell className={classes.configColumn}>Default value</TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -116,16 +138,41 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
                     setModalOpen(true);
                   }}
                   hover
-                  className={classes.pointer}
+                  className={clsx(classes.pointer, classes.configRow)}
                 >
                   <TableCell>{column.name}</TableCell>
                   <TableCell>
                     <TypeChip type={column.type} />
                   </TableCell>
                   <TableCell>{renderDefaultValue(column.type, column.defaultValue)}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newColumns = [...currentDirectory.columns];
+                        _.pullAt(newColumns, index);
+                        updateCurrentDirectoryColumns(newColumns);
+                      }}
+                      className={classes.deleteButton}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
-              <TableRow></TableRow>
+              <TableRow
+                hover
+                className={clsx(classes.pointer, classes.configRow)}
+                onClick={() => {
+                  setSelectedIndex(currentDirectory.columns.length);
+                  setModalOpen(true);
+                }}
+              >
+                <TableCell colSpan={4} align="center">
+                  Add new column
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </div>
@@ -138,7 +185,7 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
         }}
         columns={currentDirectory.columns}
         defaultIndex={selectedIndex}
-        updateDirectoryColumns={updateDirectoryColumns(currentDirectory.name)}
+        updateDirectoryColumns={updateCurrentDirectoryColumns}
       />
     </Page>
   );
