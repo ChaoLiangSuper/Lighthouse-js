@@ -20,15 +20,16 @@ const initialState: RecordCollection = {
 
 const reducer = (state = initialState, action: RecordAction) => {
   switch (action.type) {
-    case recordActionType.RECORD_UPDATE:
+    case recordActionType.RECORD_UPDATE: {
       const directoryName = action.data.directoryName;
       return {
-        ...initialState,
+        ...state,
         [directoryName]: {
           ...initialState[directoryName],
           [action.data.updatedField.key]: action.data.updatedField
         }
       };
+    }
     default:
       return state;
   }

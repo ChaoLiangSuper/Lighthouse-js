@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { Redirect, RouteComponentProps, useHistory, useParams, Link as RouterLink } from 'react-router-dom';
+import { Redirect, RouteComponentProps, useHistory, Link as RouterLink } from 'react-router-dom';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
@@ -14,11 +14,11 @@ import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Directory, Record, Store } from '../../types';
-import { urlParams } from '../../router';
+import { urlParams } from '../../Router';
 import Page from '../Page';
-import DirectoryModal from '../modals/DirectoryModal';
+import RecordModal from '../modals/RecordModal';
 
-interface DirectoryViewProps {
+interface RecordsViewProps {
   config: Directory;
   records: {
     [s: string]: Record;
@@ -48,10 +48,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
+const RecordsView: React.FC<RecordsViewProps> = ({ config, records }) => {
   const classes = useStyles();
   const history = useHistory();
-  const { directoryName } = useParams<urlParams>();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedRecordKey, setSelectedRecordKey] = useState<string | null>(null);
 
@@ -76,7 +75,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
           color="primary"
           size="small"
           disableElevation
-          onClick={() => history.push(`config/${directoryName}`)}
+          onClick={() => history.push(`config`)}
         >
           Edit
         </Button>
@@ -121,7 +120,7 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
           </TableRow>
         </TableBody>
       </Table>
-      <DirectoryModal
+      <RecordModal
         open={isModalOpen}
         onClose={() => {
           setModalOpen(false);
@@ -136,4 +135,4 @@ const DirectoryView: React.FC<DirectoryViewProps> = ({ config, records }) => {
 export default connect(({ directories, recordCollection }: Store, { match }: RouteComponentProps<urlParams>) => ({
   config: directories[match.params.directoryName],
   records: recordCollection[match.params.directoryName]
-}))(DirectoryView);
+}))(RecordsView);

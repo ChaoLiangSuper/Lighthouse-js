@@ -3,16 +3,17 @@ import MaterialUiModal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   title: string;
   buttons?: React.ReactNode;
+  maxHeight?: number;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme, { maxHeight?: number }>((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     width: `calc(100vw - ${theme.spacing(20)}px)`,
     maxWidth: 1000,
     height: `calc(100vh - ${theme.spacing(20)}px)`,
-    maxHeight: 700
+    maxHeight: (props) => props.maxHeight || 700
   },
   titleBar: {
     display: 'flex',
@@ -49,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Modal: React.FC<ModalProps> = ({ open, onClose, title, children, buttons }) => {
-  const classes = useStyles();
+const Modal: React.FC<ModalProps> = ({ open, onClose, title, children, buttons, maxHeight }) => {
+  const classes = useStyles({ maxHeight });
 
   return (
     <MaterialUiModal open={open} onClose={onClose} className={classes.root}>

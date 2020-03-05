@@ -1,4 +1,4 @@
-import { DirectoryAction } from '../actions';
+import { DirectoryAction, directoryActionType } from '../actions';
 import { DirectoryCollection } from '../../types';
 import { fieldType } from '../../constant';
 
@@ -37,7 +37,7 @@ const initialState: DirectoryCollection = {
         defaultValue: ''
       }
     ],
-    numOfRecords: 1
+    numOfRecords: 3
   },
   directory2: {
     name: 'directory2',
@@ -79,12 +79,21 @@ const initialState: DirectoryCollection = {
 
 const reducer = (state = initialState, action: DirectoryAction) => {
   switch (action.type) {
-    case 'DIRECTORY_COLUMNS_UPDATE':
+    case directoryActionType.DIRECTORY_COLUMNS_UPDATE:
       return {
-        ...initialState,
+        ...state,
         [action.data.name]: {
           ...initialState[action.data.name],
           columns: action.data.columns
+        }
+      };
+    case directoryActionType.DIRECTORY_ADD:
+      return {
+        ...state,
+        [action.data.name]: {
+          name: action.data.name,
+          columns: [],
+          numOfRecords: 0
         }
       };
     default:

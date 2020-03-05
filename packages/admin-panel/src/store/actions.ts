@@ -7,13 +7,33 @@ export interface UserAction {
   data: User;
 }
 
-export interface DirectoryAction {
-  type: 'DIRECTORY_COLUMNS_UPDATE';
-  data: {
-    name: string;
-    columns: Column[];
-  };
+export enum directoryActionType {
+  DIRECTORY_COLUMNS_UPDATE = 'DIRECTORY_COLUMNS_UPDATE',
+  DIRECTORY_ADD = 'DIRECTORY_ADD',
+  DIRECTORY_RECORD_NUMBER_UPDATE = 'DIRECTORY_RECORD_NUMBER_UPDATE'
 }
+
+export type DirectoryAction =
+  | {
+      type: directoryActionType.DIRECTORY_COLUMNS_UPDATE;
+      data: {
+        name: string;
+        columns: Column[];
+      };
+    }
+  | {
+      type: directoryActionType.DIRECTORY_ADD;
+      data: {
+        name: string;
+      };
+    }
+  | {
+      type: directoryActionType.DIRECTORY_RECORD_NUMBER_UPDATE;
+      data: {
+        name: string;
+        numOfRecords: number;
+      };
+    };
 
 export enum recordActionType {
   RECORD_ADD = 'RECORD_ADD',

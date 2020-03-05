@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Router from './router';
+import Router from './Router';
 import store from './store';
 
 const useStyles = makeStyles({
@@ -13,7 +13,6 @@ const useStyles = makeStyles({
 
 const App: React.FC = () => {
   const classes = useStyles();
-  console.log('APP render');
   return (
     <Provider store={store}>
       <div className={classes.root}>

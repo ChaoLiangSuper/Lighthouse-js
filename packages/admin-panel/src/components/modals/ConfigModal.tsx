@@ -38,7 +38,7 @@ const emptyColumnState: Column = {
 const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defaultIndex, updateDirectoryColumns }) => {
   const classes = useStyles();
   const [currentIndex, setCurrentIndex] = useState(defaultIndex);
-  const [state, setState] = useState(columns[currentIndex]);
+  const [state, setState] = useState(columns[currentIndex] || emptyColumnState);
 
   useEffect(() => {
     setState(columns[currentIndex] || emptyColumnState);
@@ -70,7 +70,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defau
             <MenuItem value={0}>No</MenuItem>
           </TextField>
         );
-      case fieldType.NUMBER:
+      case fieldType.NUMBER: {
         const isError = _.isNaN(Number(state.defaultValue));
         return (
           <TextField
@@ -88,6 +88,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defau
             error={isError}
           />
         );
+      }
       case fieldType.STRING:
         return (
           <TextField
