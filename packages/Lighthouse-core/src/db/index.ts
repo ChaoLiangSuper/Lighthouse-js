@@ -16,12 +16,12 @@ export const connect = async (): Promise<void> => {
       pass: dbPass,
       dbName: dbName
     });
-    console.info(`[DB]: Connected to database`);
+    console.warn(`[DB]: Connected to database`);
   } catch (err) {
-    console.info(`[DB]: Unable to connect to database, ${err}`);
+    console.warn(`[DB]: Unable to connect to database, ${err}`);
   }
 
   mongoose.connection.on('error', (err) => {
-    console.info(`[${instance.name}]: ${err}`);
+    console.warn(`[${instance.name}]: ${err}`);
   });
 };

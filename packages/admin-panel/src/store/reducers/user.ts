@@ -10,7 +10,7 @@ const reducer = (state = initialState, action: UserAction) => {
   switch (action.type) {
     case 'LOGIN':
       return {
-        ...initialState,
+        ...state,
         ...action.data
       };
     case 'LOGOUT':

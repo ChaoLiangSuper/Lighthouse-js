@@ -14,6 +14,6 @@ server.on('error', (err) => {
   console.error(`[${instance.name}]: ${err}`);
 });
 server.on('listening', () => {
-  console.info(`[${instance.name}]: Listening on port ${port}`);
+  console.warn(`[${instance.name}]: Listening on port ${port}`);
   db.connect();
 });

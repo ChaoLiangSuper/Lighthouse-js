@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from 'express';
 
 const errorHandler: ErrorRequestHandler = (err, req, res) => {
-  console.log(err);
+  console.error(err);
   res.send(500);
 };
 

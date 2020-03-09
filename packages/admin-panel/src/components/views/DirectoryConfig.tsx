@@ -22,7 +22,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TypeChip from '../TypeChip';
 import { Store, DirectoryCollection, Column, ValueType } from '../../types';
-import { urlParams } from '../../router';
+import { urlParams } from '../../Router';
 import ConfigModal from '../modals/ConfigModal';
 import { fieldType } from '../../constant';
 
@@ -98,7 +98,7 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
         <Link color="inherit" component={RouterLink} to="/">
           Dashboard
         </Link>
-        <Link color="inherit" component={RouterLink} to={`/directory/${currentDirectory.name}`}>
+        <Link color="inherit" component={RouterLink} to={`/directory/${currentDirectory.name}/records`}>
           {currentDirectory.name}
         </Link>
         <Typography color="textPrimary">Schema config</Typography>
@@ -112,7 +112,11 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
                   <ListItemText primary={directory.name} />
                 </ListItem>
               ) : (
-                <ListItem key={directory.name} button onClick={() => history.push(`${directory.name}`)}>
+                <ListItem
+                  key={directory.name}
+                  button
+                  onClick={() => history.push(`/directory/${encodeURIComponent(directory.name)}/config`)}
+                >
                   <ListItemText primary={directory.name} />
                 </ListItem>
               )

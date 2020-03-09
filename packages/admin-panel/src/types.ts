@@ -27,7 +27,7 @@ export type RecordCollection = {
 
 export type Record = {
   key: string;
-  [s: string]: any;
+  [columnName: string]: any;
 };
 
 export type User = {
