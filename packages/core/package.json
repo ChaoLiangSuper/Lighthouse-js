@@ -9,6 +9,7 @@
     "dev": "nodemon -x ts-node src/index.ts"
   },
   "dependencies": {
+    "@types/pg": "^7.14.3",
     "apollo-server": "^2.11.0",
     "apollo-server-express": "^2.11.0",
     "body-parser": "^1.19.0",
@@ -16,6 +17,7 @@
     "express": "^4.17.1",
     "graphql": "^14.6.0",
     "mongoose": "^5.8.9",
+    "pg": "^8.0.2",
     "uuid": "^7.0.2"
   },
   "devDependencies": {
