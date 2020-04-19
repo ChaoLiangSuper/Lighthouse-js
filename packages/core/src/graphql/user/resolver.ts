@@ -1,5 +1,4 @@
 import { IFieldResolver } from 'apollo-server-express';
-import user from '../../models/user';
 
 type UserQuery = {
   users: IFieldResolver<{}, {}>;
@@ -7,10 +6,7 @@ type UserQuery = {
 };
 
 const userResolver = {
-  Query: {
-    users: () => user.find(),
-    user: (_, { id }) => user.where('id', id).findOne()
-  } as UserQuery
+  Query: {} as UserQuery
 };
 
 export default userResolver;

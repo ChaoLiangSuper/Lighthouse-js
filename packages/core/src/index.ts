@@ -8,9 +8,10 @@ import * as db from './db';
 const port = process.env.CORE_PORT || 5000;
 const server = http.createServer(app);
 
-server.listen({ port }, () => {
+server.listen({ port }, async () => {
   console.warn(`[${instance.name}]: Listening on port ${port}`);
-  db.connect();
+  await db.connect();
+  await db.initialize();
 });
 
 server.on('error', (err) => {
