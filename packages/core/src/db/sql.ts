@@ -7,12 +7,12 @@ export const initialize = `
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     phone TEXT,
-    permissions TEXT []
+    permissions JSON
   );
 
   CREATE TABLE IF NOT EXISTS lh_metadata (
     id SERIAL PRIMARY KEY,
-    collectionName TEXT UNIQUE NOT NULL,
+    directoryName TEXT UNIQUE NOT NULL,
     displayName TEXT UNIQUE NOT NULL
   );
 `;
@@ -21,12 +21,12 @@ export const addTestData = `
   INSERT INTO lh_users (
     username, password, permissions
   ) VALUES (
-    'admin', 'admin', '{"admin"}'
+    'admin', 'admin', '["admin"]'
   ) ON CONFLICT DO NOTHING;
 `;
 
 export const createTable = (tableName: string, fields: Field[]) => `
-  CREATE TABLE ${tableName} (
+  CREATE TABLE IF NOT EXISTS ${tableName} (
     id SERIAL PRIMARY KEY,
     ${_.map(fields, ({ name, type }) => `${name} ${type}`).join(', ')}
   )
@@ -34,6 +34,10 @@ export const createTable = (tableName: string, fields: Field[]) => `
 
 export const insertMetadata = `
   INSERT INTO lh_metadata (
-    collectionName, displayName
+    directoryName, displayName
   ) VALUES ($1, $2) RETURNING *
+`;
+
+export const getAllUsers = `
+  SELECT * FROM lh_users
 `;

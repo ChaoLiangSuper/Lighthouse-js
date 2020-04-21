@@ -1,8 +1,10 @@
 import express from 'express';
-import { newCollection } from '../controllers/collection';
+import { newDirectory } from '../controllers/directory';
+import { allUser } from '../controllers/user';
 
 const router = express.Router();
 
-router.post('/collection/new', newCollection);
+router.post('/directory/new', newDirectory);
+router.get('/user', allUser);
 
 export default router;

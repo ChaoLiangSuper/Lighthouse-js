@@ -12,6 +12,7 @@ server.listen({ port }, async () => {
   console.warn(`[${instance.name}]: Listening on port ${port}`);
   await db.connect();
   await db.initialize();
+  await db.addTestData();
 });
 
 server.on('error', (err) => {

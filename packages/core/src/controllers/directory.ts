@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import * as db from '../db';
 import { Field } from '../type';
 
-export const newCollection: RequestHandler = async (req, res) => {
+export const newDirectory: RequestHandler = async (req, res) => {
   try {
     const { tableName, fields } = req.body as { tableName: string; fields: Field[] };
     await db.createTable(tableName, fields);
