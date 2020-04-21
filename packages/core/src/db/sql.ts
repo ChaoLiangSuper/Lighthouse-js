@@ -21,7 +21,7 @@ export const addTestData = `
   INSERT INTO lh_users (
     username, password, permissions
   ) VALUES (
-    'admin', 'admin', '["admin"]'
+    'admin', '$2b$10$.Wb/OkeXCVImjV0VUh6jdeurxqkIVo5FvfT5B3GR3nl8G.OUBspB2', '["admin"]'
   ) ON CONFLICT DO NOTHING;
 `;
 
@@ -40,4 +40,10 @@ export const insertMetadata = `
 
 export const getAllUsers = `
   SELECT * FROM lh_users
+`;
+
+export const addNewUser = `
+  INSERT INTO lh_users (
+    username, password, permissions
+  ) VALUES ($1, $2, $3) RETURNING *
 `;

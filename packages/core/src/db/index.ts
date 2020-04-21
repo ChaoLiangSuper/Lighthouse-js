@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import { Pool } from 'pg';
-import { config } from './config';
+import { config } from '../config';
 import * as sql from './sql';
 import { instance } from '../config';
 import { Field } from '../type';
 
-const pool = new Pool(config);
+const pool = new Pool(config.db);
 
 export const connect = async () => {
   try {
