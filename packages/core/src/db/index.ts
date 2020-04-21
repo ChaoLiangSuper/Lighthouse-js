@@ -1,27 +1,56 @@
-import mongoose from 'mongoose';
+import _ from 'lodash';
+import { Pool } from 'pg';
+import { config } from './config';
+import * as sql from './sql';
 import { instance } from '../config';
+import { Field } from '../type';
 
-export const connect = async (): Promise<void> => {
-  const dbHost = process.env.DB_HOST || 'mongodb://localhost:27017/';
-  const dbUser = process.env.DB_USER || '';
-  const dbPass = process.env.DB_PASS || '';
-  const dbName = process.env.DB_NAME || 'lighthouse';
+const pool = new Pool(config);
 
+export const connect = async () => {
   try {
-    await mongoose.connect(dbHost, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      user: dbUser,
-      pass: dbPass,
-      dbName: dbName
-    });
-    console.warn(`[DB]: Connected to database`);
+    await pool.connect();
+    console.warn(`[${instance.db}]: Connected to database.`);
   } catch (err) {
-    console.warn(`[DB]: Unable to connect to database, ${err}`);
+    console.error(`[${instance.db}]: Unable to connect to database, ${err}`);
   }
+};
 
-  mongoose.connection.on('error', (err) => {
-    console.warn(`[${instance.name}]: ${err}`);
-  });
+export const initialize = async () => {
+  try {
+    await pool.query(sql.initialize);
+    console.warn(`[${instance.db}]: Initialized default tables.`);
+  } catch (err) {
+    console.error(`[${instance.db}]: Initialization error, ${err}`);
+  }
+};
+
+export const addTestData = async () => {
+  try {
+    await pool.query(sql.addTestData);
+    console.warn(`[${instance.db}]: Test data loaded.`);
+  } catch (err) {
+    console.error(`[${instance.db}]: Test data load failed. ${err}`);
+  }
+};
+
+export const createTable = async (tableName: string, fields: Field[]) => {
+  const legalTableName = _.snakeCase(tableName);
+  try {
+    await pool.query('BEGIN');
+    await pool.query(sql.createTable(legalTableName, fields));
+    await pool.query(sql.insertMetadata, [legalTableName, tableName]);
+    await pool.query('COMMIT');
+  } catch (err) {
+    await pool.query('ROLLBACK');
+    throw Error(err);
+  }
+};
+
+export const getAllUsers = async () => {
+  try {
+    await pool.query(sql.getAllUsers);
+  } catch (err) {
+    throw Error(err);
+  }
 };

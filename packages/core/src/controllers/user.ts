@@ -1,25 +1,12 @@
 import { RequestHandler } from 'express';
-import user from '../models/user';
+import * as db from '../db';
 
-export const getUsers: RequestHandler = async (req, res, next) => {
+export const allUser: RequestHandler = async (req, res) => {
   try {
-    const result = await user.find({}).exec();
-    res.status(200).send(result);
+    await db.getAllUsers();
+    res.sendStatus(200);
   } catch (err) {
-    next(err);
-  }
-};
-
-export const createUser: RequestHandler = async (req, res, next) => {
-  const { username, password, phone } = req.body;
-  try {
-    const result = await new user({
-      username,
-      password,
-      phone
-    }).save();
-    res.status(201).send(result);
-  } catch (err) {
-    next(err);
+    res.status(500);
+    res.send(err.message);
   }
 };

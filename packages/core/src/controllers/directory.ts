@@ -1,23 +1,14 @@
 import { RequestHandler } from 'express';
-import directory from '../models/directory';
-import organization from '../models/organization';
+import * as db from '../db';
+import { Field } from '../type';
 
-export const getDirectories: RequestHandler = async (req, res, next) => {
+export const newDirectory: RequestHandler = async (req, res) => {
   try {
-    const result = await directory.find({}).exec();
-    res.status(200).send(result);
+    const { tableName, fields } = req.body as { tableName: string; fields: Field[] };
+    await db.createTable(tableName, fields);
+    res.sendStatus(200);
   } catch (err) {
-    next(err);
-  }
-};
-
-export const createDirectory: RequestHandler = async (req, res, next) => {
-  const { name, organizationName } = req.body;
-  try {
-    const existOrg = await organization.findOne({ name: organizationName }).exec();
-    const result = await new directory({ name, organization: existOrg }).save();
-    res.status(201).send(result);
-  } catch (err) {
-    next(err);
+    res.status(500);
+    res.send(err.message);
   }
 };
