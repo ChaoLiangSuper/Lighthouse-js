@@ -1,9 +1,9 @@
 import { RequestHandler } from 'express';
-import * as db from '../db';
+import { getAllUsers } from '../models/user';
 
 export const allUser: RequestHandler = async (req, res) => {
   try {
-    await db.getAllUsers();
+    await getAllUsers();
     res.sendStatus(200);
   } catch (err) {
     res.status(500);

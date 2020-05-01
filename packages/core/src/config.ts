@@ -2,7 +2,7 @@ require('dotenv').config({ path: '../../.env' });
 
 export const config = {
   port: process.env.CORE_PORT || 5000,
-  jwtToken: process.env.JWT_TOKEN || 'secret',
+  jwtToken: process.env.JWT_TOKEN || 'secret-token',
   db: {
     user: process.env.DB_USER || 'lighthouse',
     host: process.env.DB_HOST || 'localhost',

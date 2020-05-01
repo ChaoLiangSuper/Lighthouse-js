@@ -1,8 +1,23 @@
 import { ErrorRequestHandler } from 'express';
 
-const errorHandler: ErrorRequestHandler = (err, req, res) => {
-  console.error(err);
-  res.send(500);
-};
+export class ErrorHandler {
+  status: number;
+  message: string;
 
-export default errorHandler;
+  constructor(status: number, message: string) {
+    this.status = status;
+    this.message = message;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  if (err instanceof ErrorHandler) {
+    res.status(err.status);
+    res.json({
+      msg: err.message
+    });
+  } else {
+    res.sendStatus(500);
+  }
+};
