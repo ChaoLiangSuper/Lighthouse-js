@@ -1,10 +1,13 @@
 import express from 'express';
-import { newDirectory } from '../controllers/directory';
-import { allUser } from '../controllers/user';
+import { login, logout } from '../controllers/login';
+import { errorHandler } from '../utils/errorHandler';
+import { authorizationHandler } from '../utils/authorizationHandler';
 
 const router = express.Router();
 
-router.post('/directory/new', newDirectory);
-router.get('/user', allUser);
+router.post('/login', login);
+router.get('/logout', [authorizationHandler, logout]);
+
+router.use(errorHandler);
 
 export default router;

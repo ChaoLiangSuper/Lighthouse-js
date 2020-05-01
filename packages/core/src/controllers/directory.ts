@@ -1,11 +1,15 @@
 import { RequestHandler } from 'express';
-import * as db from '../db';
-import { Field } from '../type';
+import { addMetadata } from '../models/metadata';
 
-export const newDirectory: RequestHandler = async (req, res) => {
+interface NewDirectoryBody {
+  tableName: string;
+  fields: {};
+}
+
+export const newDirectory: RequestHandler<{}, {}, NewDirectoryBody> = async (req, res) => {
   try {
-    const { tableName, fields } = req.body as { tableName: string; fields: Field[] };
-    await db.createTable(tableName, fields);
+    const { tableName, fields } = req.body;
+    await addMetadata(tableName, fields);
     res.sendStatus(200);
   } catch (err) {
     res.status(500);
