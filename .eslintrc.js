@@ -32,6 +32,7 @@ module.exports = {
     'prettier/prettier': 1,
     'react/prop-types': 0,
     '@typescript-eslint/explicit-function-return-type': 0,
-    'no-console': [2, { allow: ['warn', 'error'] }]
+    'no-console': [2, { allow: ['warn', 'error'] }],
+    '@typescript-eslint/no-unused-vars': 'error'
   }
 };

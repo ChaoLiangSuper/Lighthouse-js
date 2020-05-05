@@ -11,7 +11,7 @@ export class ErrorHandler {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (err instanceof ErrorHandler) {
     res.status(err.status);
     res.json({

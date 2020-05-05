@@ -22,8 +22,6 @@ export const getAllUsers = async () => {
   const pool = new Pool(config.db);
   try {
     await pool.query(`SELECT * FROM ${TABLE_NAME}`);
-  } catch (err) {
-    throw Error(err);
   } finally {
     pool.end();
   }
@@ -34,8 +32,6 @@ export const getUser = async (username: User['username']) => {
   try {
     const { rows } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE username = $1`, [username]);
     return rows[0] as User;
-  } catch (err) {
-    throw Error(err);
   } finally {
     pool.end();
   }
@@ -56,8 +52,6 @@ export const addUser = async (username: User['username'], password: User['passwo
       data: rows,
       rowCount
     };
-  } catch (err) {
-    throw Error(err);
   } finally {
     pool.end();
   }

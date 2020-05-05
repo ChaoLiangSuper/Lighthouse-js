@@ -1,12 +1,13 @@
 import { RequestHandler } from 'express';
-import { getAllUsers } from '../models/user';
+import * as userModel from '../models/user';
+import { ErrorHandler } from '../utils/errorHandler';
 
-export const allUser: RequestHandler = async (req, res) => {
+export const getAllUsers: RequestHandler = async (_req, res, next) => {
   try {
-    await getAllUsers();
-    res.sendStatus(200);
+    const result = await userModel.getAllUsers();
+    res.status(200);
+    res.send(result);
   } catch (err) {
-    res.status(500);
-    res.send(err.message);
+    next(new ErrorHandler(500, err));
   }
 };
