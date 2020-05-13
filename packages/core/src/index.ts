@@ -8,7 +8,7 @@ const server = http.createServer(app);
 server.listen({ port: config.port }, async () => {
   console.warn(`[${instance.name}]: Listening on port ${config.port}`);
   await db.connect();
-  await db.initialize();
+  await db.initialize(true);
   await db.addTestData();
 });
 
