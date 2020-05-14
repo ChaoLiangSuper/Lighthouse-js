@@ -1,5 +1,9 @@
 import { fieldType } from './constant';
 
+export type UrlParams = {
+  directoryName: string;
+};
+
 export type ValueType = string | number | boolean;
 
 export type Column = {

@@ -13,10 +13,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Directory, Record, Store } from '../../types';
-import { urlParams } from '../../Router';
-import Page from '../Page';
-import RecordModal from '../modals/RecordModal';
+import { Directory, Record, Store, UrlParams } from '../types';
+import Page from '../components/Page';
+import RecordModal from '../components/modals/RecordModal';
 
 interface RecordsViewProps {
   config: Directory;
@@ -132,7 +131,7 @@ const RecordsView: React.FC<RecordsViewProps> = ({ config, records }) => {
   );
 };
 
-export default connect(({ directories, recordCollection }: Store, { match }: RouteComponentProps<urlParams>) => ({
+export default connect(({ directories, recordCollection }: Store, { match }: RouteComponentProps<UrlParams>) => ({
   config: directories[match.params.directoryName],
   records: recordCollection[match.params.directoryName]
 }))(RecordsView);

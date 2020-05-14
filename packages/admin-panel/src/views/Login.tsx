@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { User } from '../../types';
+import { User } from '../types';
 
 const login = (data: User) => ({ type: 'LOGIN', data });
 

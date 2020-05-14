@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Router from './Router';
+import Router from './router/Router';
 import store from './store';
 
 const useStyles = makeStyles({

@@ -6,8 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { urlParams } from '../../Router';
-import { RecordCollection, Store, Record, DirectoryCollection } from '../../types';
+import { RecordCollection, Store, Record, DirectoryCollection, UrlParams } from '../../types';
 import { recordActionType, directoryActionType } from '../../store/actions';
 import Modal from '../Modal';
 
@@ -37,7 +36,7 @@ const RecordModal: React.FC<RecordModalProps> = ({
   updateNumOfRecord
 }) => {
   const classes = useStyles();
-  const { directoryName } = useParams<urlParams>();
+  const { directoryName } = useParams<UrlParams>();
   const { columns, numOfRecords } = directories[directoryName];
   const record: Record = recordKey ? recordCollection[directoryName][recordKey] : { key: _.uniqueId('new-record-') };
   const [state, setState] = useState(record);

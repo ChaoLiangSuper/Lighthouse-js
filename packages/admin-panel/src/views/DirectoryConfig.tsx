@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
-import Page from '../Page';
+import Page from '../components/Page';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { useParams, useHistory, Link as RouterLink, Redirect } from 'react-router-dom';
@@ -17,14 +17,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import HorizontalContainer from '../HorizontalContainer';
+import HorizontalContainer from '../components/HorizontalContainer';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import TypeChip from '../TypeChip';
-import { Store, DirectoryCollection, Column, ValueType } from '../../types';
-import { urlParams } from '../../Router';
-import ConfigModal from '../modals/ConfigModal';
-import { fieldType } from '../../constant';
+import TypeChip from '../components/TypeChip';
+import { Store, DirectoryCollection, Column, ValueType, UrlParams } from '../types';
+import ConfigModal from '../components/modals/ConfigModal';
+import { fieldType } from '../constant';
 
 interface DirectoryConfigProps {
   directories: DirectoryCollection;
@@ -68,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDirectoryColumns }) => {
   const classes = useStyles();
   const history = useHistory();
-  const params = useParams<urlParams>();
+  const params = useParams<UrlParams>();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const currentDirectory = directories[params.directoryName];
