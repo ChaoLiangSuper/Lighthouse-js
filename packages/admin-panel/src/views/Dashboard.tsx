@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { DirectoryCollection, Store } from '../types';
+import { DirectoryCollection, Store } from '../types/types';
 import Page from '../components/Page';
 import DirectoryCard from '../components/DirectoryCard';
 

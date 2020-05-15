@@ -13,7 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Directory, Record, Store, UrlParams } from '../types';
+import { Directory, Record, Store, UrlParams } from '../types/types';
 import Page from '../components/Page';
 import RecordModal from '../components/modals/RecordModal';
 

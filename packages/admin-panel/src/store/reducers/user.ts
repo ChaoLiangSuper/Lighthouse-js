@@ -1,5 +1,5 @@
 import { UserAction } from '../actions';
-import { User } from '../../types';
+import { User } from '../../types/types';
 
 const initialState: User = {
   username: null,

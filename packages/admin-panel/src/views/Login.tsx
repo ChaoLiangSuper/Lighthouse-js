@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,7 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { User } from '../types';
+import { User } from '../types/types';
+import { AppName } from '../constant';
 
 const login = (data: User) => ({ type: 'LOGIN', data });
 
@@ -50,6 +52,9 @@ const Login: React.FC<LoginProps> = ({ login }) => {
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
       <CssBaseline />
+      <Helmet>
+        <title>Login - {AppName}</title>
+      </Helmet>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />

@@ -14,7 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 import DirectoryModal from './modals/DirectoryModal';
-import { Directory } from '../types';
+import { Directory } from '../types/types';
 
 interface EmptyDirectoryCardProps {
   isEmpty: true;

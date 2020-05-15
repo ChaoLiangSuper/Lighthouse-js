@@ -1,5 +1,5 @@
 import { RecordAction, recordActionType } from '../actions';
-import { RecordCollection } from '../../types';
+import { RecordCollection } from '../../types/types';
 
 const initialState: RecordCollection = {
   directory1: {

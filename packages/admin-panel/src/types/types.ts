@@ -1,4 +1,4 @@
-import { fieldType } from './constant';
+import { fieldType } from '../constant';
 
 export type UrlParams = {
   directoryName: string;

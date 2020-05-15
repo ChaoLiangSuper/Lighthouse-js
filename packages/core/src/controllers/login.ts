@@ -18,13 +18,16 @@ export const login: RequestHandler<{}, {}, LoginRequestBody> = async (req, res, 
 
     if (!user) return next(new ErrorHandler(401, 'User not found'));
 
+    const userWithoutPwd = _.omit(user, 'password');
+
     if (bcrypt.compareSync(password, user.password)) {
-      const token = jwt.sign({ user: _.omit(user, 'password') }, config.jwtToken, {
+      const token = jwt.sign({ user: userWithoutPwd }, config.jwtToken, {
         expiresIn: '24h'
       });
 
       res.cookie('lh_token', token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), httpOnly: true });
-      return res.sendStatus(200);
+      res.status(200);
+      return res.send(userWithoutPwd);
     } else {
       return next(new ErrorHandler(401, 'Unauthenticated'));
     }

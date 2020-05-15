@@ -21,7 +21,7 @@ import HorizontalContainer from '../components/HorizontalContainer';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TypeChip from '../components/TypeChip';
-import { Store, DirectoryCollection, Column, ValueType, UrlParams } from '../types';
+import { Store, DirectoryCollection, Column, ValueType, UrlParams } from '../types/types';
 import ConfigModal from '../components/modals/ConfigModal';
 import { fieldType } from '../constant';
 

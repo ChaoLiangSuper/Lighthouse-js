@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import Modal from '../Modal';
 import { directoryActionType } from '../../store/actions';
-import { Store, DirectoryCollection } from '../../types';
+import { Store, DirectoryCollection } from '../../types/types';
 
 interface DirectoryModalProps {
   open: boolean;

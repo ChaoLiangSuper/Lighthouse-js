@@ -1,5 +1,5 @@
 import { DirectoryAction, directoryActionType } from '../actions';
-import { DirectoryCollection } from '../../types';
+import { DirectoryCollection } from '../../types/types';
 import { fieldType } from '../../constant';
 
 const initialState: DirectoryCollection = {

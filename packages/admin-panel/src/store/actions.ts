@@ -1,4 +1,4 @@
-import { User, Record, Column } from '../types';
+import { User, Record, Column } from '../types/types';
 
 export type userActionType = 'LOGIN' | 'LOGOUT';
 

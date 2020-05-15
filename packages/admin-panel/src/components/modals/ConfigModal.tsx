@@ -7,7 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import clsx from 'clsx';
 import Modal from '../Modal';
-import { Column } from '../../types';
+import { Column } from '../../types/types';
 import { fieldType, fieldTypeMapping } from '../../constant';
 
 interface ConfigModalProps {

@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Router from './router/Router';
 import store from './store';
+import UserContext from './contexts/UserContext';
 
 const useStyles = makeStyles({
   root: {
@@ -15,10 +16,12 @@ const App: React.FC = () => {
   const classes = useStyles();
   return (
     <Provider store={store}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <Router />
-      </div>
+      <UserContext.Provider>
+        <div className={classes.root}>
+          <CssBaseline />
+          <Router />
+        </div>
+      </UserContext.Provider>
     </Provider>
   );
 };

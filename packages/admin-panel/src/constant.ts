@@ -1,3 +1,5 @@
+export const AppName = 'Lighthouse-js';
+
 export enum fieldType {
   STRING = 'STRING',
   NUMBER = 'NUMBER',
