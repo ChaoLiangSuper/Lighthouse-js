@@ -1,5 +1,7 @@
 import React from 'react';
+import docoder from 'jwt-decode';
 import { User } from '../types/user';
+import cookies from '../utils/cookies';
 
 interface UserContextState {
   user: User | null;
@@ -17,8 +19,18 @@ const Context = React.createContext<UserContextState>({
   }
 });
 
+const parseToken = () => {
+  try {
+    const token = cookies.get('lh_token') as string;
+    const { user } = docoder(token) as { user: User };
+    return user;
+  } catch (err) {
+    return null;
+  }
+};
+
 const UserContext: React.FC = ({ children }) => {
-  const [currentUser, setCurrentUser] = React.useState<User | null>(null);
+  const [currentUser, setCurrentUser] = React.useState<User | null>(parseToken());
 
   const login = (nextUser: User) => setCurrentUser(nextUser);
 
@@ -40,6 +52,6 @@ const UserContext: React.FC = ({ children }) => {
 UserContext.displayName = 'UserContext';
 
 export default {
-  Provider: UserContext,
-  Consumer: Context.Consumer
+  Context,
+  State: UserContext
 };

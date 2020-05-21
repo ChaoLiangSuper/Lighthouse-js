@@ -16,12 +16,12 @@ const App: React.FC = () => {
   const classes = useStyles();
   return (
     <Provider store={store}>
-      <UserContext.Provider>
+      <CssBaseline />
+      <UserContext.State>
         <div className={classes.root}>
-          <CssBaseline />
           <Router />
         </div>
-      </UserContext.Provider>
+      </UserContext.State>
     </Provider>
   );
 };

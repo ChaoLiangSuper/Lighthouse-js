@@ -1,106 +1,32 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { User } from '../types/types';
 import { AppName } from '../constant';
+import LoginPanel from '../components/LoginPanel';
+import Page from '../components/Page';
 
-const login = (data: User) => ({ type: 'LOGIN', data });
-
-interface LoginProps {
-  login: (u: User) => void;
-}
-
-const useStyles = makeStyles((theme) => ({
-  container: {
+const useStyles = makeStyles({
+  loginBackground: {
+    height: '100%',
     display: 'flex',
-    minHeight: '100vh',
-    alignItems: 'center'
-  },
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
-  },
-  formWrapper: {
-    marginTop: theme.spacing(1)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
+    alignItems: 'center',
+    justifyContent: 'center'
   }
-}));
+});
 
-const Login: React.FC<LoginProps> = ({ login }) => {
+const Login: React.FC = () => {
   const classes = useStyles();
-  const history = useHistory();
-
-  const [email, setEmail] = React.useState('');
 
   return (
-    <Container component="main" maxWidth="xs" className={classes.container}>
-      <CssBaseline />
+    <Page showNavigation={false}>
       <Helmet>
         <title>Login - {AppName}</title>
       </Helmet>
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <div className={classes.formWrapper}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={({ target }): void => setEmail(target.value)}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={() => {
-              login({ username: email, permissions: [] });
-              history.push('/');
-            }}
-          >
-            Sign In
-          </Button>
-        </div>
-      </div>
-    </Container>
+      <main className={classes.loginBackground}>
+        <LoginPanel />
+      </main>
+    </Page>
   );
 };
 
-export default connect(null, (dispatch) => bindActionCreators({ login }, dispatch))(Login);
+export default Login;

@@ -25,9 +25,8 @@ export const login: RequestHandler<{}, {}, LoginRequestBody> = async (req, res, 
         expiresIn: '24h'
       });
 
-      res.cookie('lh_token', token, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000), httpOnly: true });
       res.status(200);
-      return res.send(userWithoutPwd);
+      return res.send({ token });
     } else {
       return next(new ErrorHandler(401, 'Unauthenticated'));
     }
