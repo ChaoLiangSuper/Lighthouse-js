@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  error: {
+    background: theme.palette.error.light,
+    color: theme.palette.error.contrastText
   }
 }));
 
@@ -46,13 +50,16 @@ const LoginPanel: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const userContext = React.useContext(UserContext.Context);
+  const [error, setError] = React.useState<string | null>(null);
 
   const handleSubmit = async ({ username, password }: FormShape, { setSubmitting }: FormikHelpers<FormShape>) => {
     try {
+      setError(null);
       const user = await authApi.login(username, password);
       userContext.login(user);
       history.push('/');
-    } catch (error) {
+    } catch ({ response }) {
+      setError(response.data.msg);
       setSubmitting(false);
     }
   };
@@ -69,6 +76,11 @@ const LoginPanel: React.FC = () => {
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {({ submitForm, isSubmitting }) => (
             <Form>
+              {error ? (
+                <Typography align="center" className={classes.error}>
+                  {error}
+                </Typography>
+              ) : null}
               <Field
                 component={TextField}
                 variant="outlined"
