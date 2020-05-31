@@ -14,8 +14,8 @@ export interface RecordData {
 
 export const createRecordDataTable = `
   CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
-    directoryId INTEGER NOT NULL,
-    recordId INTEGER NOT NULL,
+    "directoryId" INTEGER NOT NULL,
+    "recordId" INTEGER NOT NULL,
     data JSON
   );
 `;
@@ -23,7 +23,7 @@ export const createRecordDataTable = `
 export const getAllRecords = async (directoryId: string) => {
   const pool = new Pool(config.db);
   try {
-    const { rows, rowCount } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE directoryId = $1;`, [directoryId]);
+    const { rows, rowCount } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE "directoryId" = $1;`, [directoryId]);
     return {
       data: rows,
       rowCount
@@ -36,7 +36,7 @@ export const getAllRecords = async (directoryId: string) => {
 export const getOneRecord = async (directoryId: string, recordId: string) => {
   const pool = new Pool(config.db);
   try {
-    const { rows } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE directoryId = $1 AND recordId = $2;`, [
+    const { rows } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE "directoryId" = $1 AND "recordId" = $2;`, [
       directoryId,
       recordId
     ]);
@@ -52,7 +52,7 @@ export const addRecord = async (directoryId: string, recordId: RecordData['recor
     const record = await pool.query(
       `
     INSERT INTO ${TABLE_NAME} (
-      directoryId, recordId, data
+      "directoryId", "recordId", data
     ) VALUES ($1, $2, $3) RETURNING *
   `,
       [directoryId, recordId, data]
@@ -72,7 +72,7 @@ export const updateRecord = async (directoryId: string, recordId: string, data?:
   const query = `
     UPDATE ${TABLE_NAME}
     SET data = $1
-    WHERE directoryId = $2 AND recordId = $3
+    WHERE "directoryId" = $2 AND "recordId" = $3
     RETURNING *;
   `;
 

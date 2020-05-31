@@ -12,6 +12,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, login }) => {
   if (user) {
     return <>{children}</>;
   }
+
   return (
     <>
       <Route exact path="/login" component={login} />

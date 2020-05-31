@@ -15,7 +15,7 @@ export interface Metadata {
 export const createMetadataTable = `
   CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
     id SERIAL PRIMARY KEY,
-    directoryName TEXT UNIQUE NOT NULL,
+    "directoryName" TEXT UNIQUE NOT NULL,
     fields JSON
   );
 `;
@@ -49,7 +49,7 @@ export const addMetadata = async (directoryName: Metadata['directoryName'], fiel
     const { rows } = await pool.query(
       `
       INSERT INTO ${TABLE_NAME} (
-        directoryName, fields
+        "directoryName", fields
       ) VALUES ($1, $2) RETURNING *;
     `,
       [directoryName, fields]

@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
-import docoder from 'jwt-decode';
+import decoder from 'jwt-decode';
 import { User } from '../types/user';
 import cookies from '../utils/cookies';
+import { setToken } from '../api';
 
 interface UserContextState {
   user: User | null;
@@ -19,7 +20,8 @@ const Context = React.createContext<UserContextState>({
 const parseToken = () => {
   try {
     const token = cookies.get('lh_token') as string;
-    const { user } = docoder(token) as { user: User };
+    const { user } = decoder(token) as { user: User };
+    setToken(token);
     return user;
   } catch (err) {
     return null;

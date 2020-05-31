@@ -6,7 +6,7 @@ export const testData = `
   ) ON CONFLICT DO NOTHING;
 
   INSERT INTO lh_metadata (
-    directoryName, fields
+    "directoryName", fields
   ) VALUES ('directory1', '{
     "number field": {
       "type": "number"
@@ -17,7 +17,7 @@ export const testData = `
   }');
 
   INSERT INTO lh_metadata (
-    directoryName, fields
+    "directoryName", fields
   ) VALUES ('directory2', '{
     "number field": {
       "type": "number"
