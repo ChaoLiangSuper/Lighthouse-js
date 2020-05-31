@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import { Redirect, RouteComponentProps, useHistory, Link as RouterLink } from 'react-router-dom';
+import { Redirect, useRouteMatch, useHistory, Link as RouterLink } from 'react-router-dom';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
@@ -11,18 +11,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
-import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { Directory, Record, Store, UrlParams } from '../types/types';
+import { UrlParams } from '../types/types';
 import Page from '../components/Page';
 import RecordModal from '../components/modals/RecordModal';
-
-interface RecordsViewProps {
-  config: Directory;
-  records: {
-    [s: string]: Record;
-  };
-}
+import DirectoriesContext from '../contexts/DirectoriesContext';
+import RecordsContext from '../contexts/RecordsContext';
 
 const useStyles = makeStyles((theme) => ({
   titleBar: {
@@ -47,11 +41,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RecordsView: React.FC<RecordsViewProps> = ({ config, records }) => {
+const RecordsView: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedRecordKey, setSelectedRecordKey] = useState<string | null>(null);
+  const { params } = useRouteMatch<UrlParams>();
+  const [isModalOpen, setModalOpen] = React.useState(false);
+  const [selectedRecordKey, setSelectedRecordKey] = React.useState<string | null>(null);
+  const { directories } = React.useContext(DirectoriesContext.Context);
+  const { records: recordsCollection } = React.useContext(RecordsContext.Context);
+  const config = directories[params.directoryName];
+  const records = recordsCollection[params.directoryName];
 
   if (_.isUndefined(config)) {
     return <Redirect to="/" />;
@@ -131,7 +130,4 @@ const RecordsView: React.FC<RecordsViewProps> = ({ config, records }) => {
   );
 };
 
-export default connect(({ directories, recordCollection }: Store, { match }: RouteComponentProps<UrlParams>) => ({
-  config: directories[match.params.directoryName],
-  records: recordCollection[match.params.directoryName]
-}))(RecordsView);
+export default RecordsView;

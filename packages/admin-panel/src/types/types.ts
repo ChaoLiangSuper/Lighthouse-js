@@ -38,9 +38,3 @@ export type User = {
   username: string | null;
   permissions: string[];
 };
-
-export type Store = {
-  directories: DirectoryCollection;
-  recordCollection: RecordCollection;
-  user: User;
-};

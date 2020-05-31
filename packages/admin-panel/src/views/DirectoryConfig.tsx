@@ -1,8 +1,7 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React from 'react';
 import Page from '../components/Page';
 import clsx from 'clsx';
-import { connect } from 'react-redux';
 import { useParams, useHistory, Link as RouterLink, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -21,14 +20,10 @@ import HorizontalContainer from '../components/HorizontalContainer';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TypeChip from '../components/TypeChip';
-import { Store, DirectoryCollection, Column, ValueType, UrlParams } from '../types/types';
+import { ValueType, UrlParams } from '../types/types';
 import ConfigModal from '../components/modals/ConfigModal';
 import { fieldType } from '../constant';
-
-interface DirectoryConfigProps {
-  directories: DirectoryCollection;
-  updateDirectoryColumns: (name: string) => (columns: Column[]) => void;
-}
+import DirectoriesContext from '../contexts/DirectoriesContext';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -64,19 +59,20 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDirectoryColumns }) => {
+const DirectoryConfig: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const params = useParams<UrlParams>();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const { directories, updateDirectories } = React.useContext(DirectoriesContext.Context);
+  const [isModalOpen, setModalOpen] = React.useState(false);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
   const currentDirectory = directories[params.directoryName];
 
   if (_.isUndefined(currentDirectory)) {
     return <Redirect to="/" />;
   }
 
-  const updateCurrentDirectoryColumns = updateDirectoryColumns(currentDirectory.name);
+  const updateCurrentDirectoryColumns = updateDirectories(currentDirectory.name);
 
   const renderDefaultValue = (type: fieldType, defaultValue: ValueType) => {
     if (defaultValue === '') return '─';
@@ -194,18 +190,4 @@ const DirectoryConfig: React.FC<DirectoryConfigProps> = ({ directories, updateDi
   );
 };
 
-export default connect(
-  ({ directories }: Store) => ({
-    directories
-  }),
-  (dispatch) => ({
-    updateDirectoryColumns: (name: string) => (columns: Column[]) =>
-      dispatch({
-        type: 'DIRECTORY_COLUMNS_UPDATE',
-        data: {
-          name,
-          columns
-        }
-      })
-  })
-)(DirectoryConfig);
+export default DirectoryConfig;

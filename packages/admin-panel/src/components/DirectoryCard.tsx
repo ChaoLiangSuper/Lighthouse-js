@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
@@ -50,8 +50,8 @@ const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
   directory
 }: EmptyDirectoryCardProps | DirectoryCardProps) => {
   const classes = useStyles();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [menuTarget, setMenuTarget] = useState<HTMLButtonElement | null>(null);
+  const [isModalOpen, setModalOpen] = React.useState(false);
+  const [menuTarget, setMenuTarget] = React.useState<HTMLButtonElement | null>(null);
   const history = useHistory();
 
   if (isEmpty) {

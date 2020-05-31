@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -37,14 +37,14 @@ const emptyColumnState: Column = {
 
 const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defaultIndex, updateDirectoryColumns }) => {
   const classes = useStyles();
-  const [currentIndex, setCurrentIndex] = useState(defaultIndex);
-  const [state, setState] = useState(columns[currentIndex] || emptyColumnState);
+  const [currentIndex, setCurrentIndex] = React.useState(defaultIndex);
+  const [state, setState] = React.useState(columns[currentIndex] || emptyColumnState);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setState(columns[currentIndex] || emptyColumnState);
   }, [currentIndex, columns]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setCurrentIndex(defaultIndex);
   }, [defaultIndex]);
 

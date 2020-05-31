@@ -1,23 +1,19 @@
 import _ from 'lodash';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { RecordCollection, Store, Record, DirectoryCollection, UrlParams } from '../../types/types';
-import { recordActionType, directoryActionType } from '../../store/actions';
+import { Record, UrlParams } from '../../types/types';
 import Modal from '../Modal';
+import DirectoriesContext from '../../contexts/DirectoriesContext';
+import RecordsContext from '../../contexts/RecordsContext';
 
 interface RecordModalProps {
   open: boolean;
   onClose: () => void;
-  directories: DirectoryCollection;
-  recordCollection: RecordCollection;
   recordKey: string | null;
-  updateRecord: (directoryName: string) => (updatedField: Record) => void;
-  updateNumOfRecord: (directoryName: string) => (numOfRecord: number) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -26,24 +22,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RecordModal: React.FC<RecordModalProps> = ({
-  open,
-  onClose,
-  directories,
-  recordCollection,
-  recordKey,
-  updateRecord,
-  updateNumOfRecord
-}) => {
+const RecordModal: React.FC<RecordModalProps> = ({ open, onClose, recordKey }) => {
   const classes = useStyles();
   const { directoryName } = useParams<UrlParams>();
+  const { directories, updateNumOfRecord } = React.useContext(DirectoriesContext.Context);
+  const { records, updateRecord } = React.useContext(RecordsContext.Context);
   const { columns, numOfRecords } = directories[directoryName];
-  const record: Record = recordKey ? recordCollection[directoryName][recordKey] : { key: _.uniqueId('new-record-') };
-  const [state, setState] = useState(record);
-
-  useEffect(() => {
-    setState(record);
-  }, [record]);
+  const record: Record = recordKey ? records[directoryName][recordKey] : { key: _.uniqueId('new-record-') };
+  const [state, setState] = React.useState(record);
 
   return (
     <Modal
@@ -61,8 +47,8 @@ const RecordModal: React.FC<RecordModalProps> = ({
             variant="contained"
             color="primary"
             onClick={() => {
-              updateRecord(directoryName)(state);
-              if (recordKey === null) updateNumOfRecord(directoryName)(numOfRecords + 1);
+              updateRecord(directoryName, state);
+              if (recordKey === null) updateNumOfRecord(directoryName, numOfRecords + 1);
               onClose();
             }}
           >
@@ -96,27 +82,4 @@ const RecordModal: React.FC<RecordModalProps> = ({
   );
 };
 
-export default connect(
-  ({ recordCollection, directories }: Store) => ({
-    recordCollection,
-    directories
-  }),
-  (dispatch) => ({
-    updateRecord: (directoryName: string) => (updatedField: Record) =>
-      dispatch({
-        type: recordActionType.RECORD_UPDATE,
-        data: {
-          directoryName,
-          updatedField
-        }
-      }),
-    updateNumOfRecord: (directoryName: string) => (numOfRecord: number) =>
-      dispatch({
-        type: directoryActionType.DIRECTORY_RECORD_NUMBER_UPDATE,
-        data: {
-          name: directoryName,
-          numOfRecord
-        }
-      })
-  })
-)(RecordModal);
+export default RecordModal;

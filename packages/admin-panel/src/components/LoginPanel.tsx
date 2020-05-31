@@ -59,7 +59,11 @@ const LoginPanel: React.FC = () => {
       userContext.login(user);
       history.push('/');
     } catch ({ response }) {
-      setError(response.data.msg);
+      if (response) {
+        setError(response.data.msg);
+      } else {
+        setError('Network Error');
+      }
       setSubmitting(false);
     }
   };

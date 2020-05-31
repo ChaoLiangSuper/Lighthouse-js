@@ -1,19 +1,15 @@
 import _ from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { connect } from 'react-redux';
 import Modal from '../Modal';
-import { directoryActionType } from '../../store/actions';
-import { Store, DirectoryCollection } from '../../types/types';
+import DirectoriesContext from '../../contexts/DirectoriesContext';
 
 interface DirectoryModalProps {
   open: boolean;
   onClose: () => void;
-  saveDirectory: (dictoryName: string) => void;
-  directories: DirectoryCollection;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,11 +23,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose, saveDirectory, directories }) => {
+const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
-  const [directoryName, setDirectoryName] = useState('');
+  const [directoryName, setDirectoryName] = React.useState('');
+  const { directories, appDirectory } = React.useContext(DirectoriesContext.Context);
 
-  useEffect(() => setDirectoryName(''), [open]);
+  React.useEffect(() => setDirectoryName(''), [open]);
 
   const validate = () =>
     directoryName !== '' &&
@@ -55,7 +52,7 @@ const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose, saveDire
             variant="contained"
             color="primary"
             onClick={() => {
-              saveDirectory(directoryName.trim());
+              appDirectory(directoryName.trim());
               onClose();
             }}
             disabled={!validate()}
@@ -78,7 +75,7 @@ const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose, saveDire
             onKeyPress={({ key }) => {
               if (key === 'Enter') {
                 if (validate()) {
-                  saveDirectory(directoryName.trim());
+                  appDirectory(directoryName.trim());
                   onClose();
                 }
               }
@@ -91,17 +88,4 @@ const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose, saveDire
   );
 };
 
-export default connect(
-  ({ directories }: Store) => ({
-    directories
-  }),
-  (dispatch) => ({
-    saveDirectory: (directoryName: string) =>
-      dispatch({
-        type: directoryActionType.DIRECTORY_ADD,
-        data: {
-          name: directoryName
-        }
-      })
-  })
-)(DirectoryModal);
+export default DirectoryModal;

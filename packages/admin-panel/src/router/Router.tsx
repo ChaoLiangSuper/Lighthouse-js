@@ -10,13 +10,13 @@ const DirectoryConfig = lazy(() => import('../views/DirectoryConfig'));
 const Router: React.FC = () => (
   <BrowserRouter>
     <Suspense fallback={<div>Loading...</div>}>
-      <Switch>
-        <PrivateRoute login={Login}>
+      <PrivateRoute login={Login}>
+        <Switch>
           <Route exact path="/directory/:directoryName/records/" component={Records} />
           <Route exact path="/directory/:directoryName/config/" component={DirectoryConfig} />
           <Route path="/" component={Dashboard} />
-        </PrivateRoute>
-      </Switch>
+        </Switch>
+      </PrivateRoute>
     </Suspense>
   </BrowserRouter>
 );

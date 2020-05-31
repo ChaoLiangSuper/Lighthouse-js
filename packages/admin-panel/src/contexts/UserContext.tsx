@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import docoder from 'jwt-decode';
 import { User } from '../types/user';
@@ -11,12 +12,8 @@ interface UserContextState {
 
 const Context = React.createContext<UserContextState>({
   user: null,
-  login: () => {
-    return;
-  },
-  logout: () => {
-    return;
-  }
+  login: _.noop,
+  logout: _.noop
 });
 
 const parseToken = () => {
@@ -31,6 +28,11 @@ const parseToken = () => {
 
 const UserContext: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = React.useState<User | null>(parseToken());
+
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line no-console
+    console.log(currentUser);
+  }
 
   const login = (nextUser: User) => setCurrentUser(nextUser);
 
