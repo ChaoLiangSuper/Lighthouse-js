@@ -1,6 +1,7 @@
 import React from 'react';
 import Navigation from './Navigation';
 import { makeStyles } from '@material-ui/core/styles';
+import Copyright from './Copyright';
 
 interface PageProps {
   showNavigation?: boolean;
@@ -29,6 +30,7 @@ const Page: React.FC<PageProps> = ({ children, showNavigation = true }) => {
         </>
       ) : null}
       {children}
+      <Copyright />
     </div>
   );
 };
