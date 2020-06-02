@@ -90,8 +90,8 @@ const DirectoryConfig: React.FC = () => {
   return (
     <Page>
       <Breadcrumbs aria-label="breadcrumb" className={classes.navLink}>
-        <Link color="inherit" component={RouterLink} to="/">
-          Dashboard
+        <Link color="inherit" component={RouterLink} to="/directory">
+          Directories
         </Link>
         <Link color="inherit" component={RouterLink} to={`/directory/${currentDirectory.name}/records`}>
           {currentDirectory.name}

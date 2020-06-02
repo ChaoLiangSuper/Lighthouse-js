@@ -61,7 +61,7 @@ const LoginPanel: React.FC = () => {
       const user = await authApi.login(username, password);
       userContext.login(user);
       addStatus({ type: StatusType.success, message: 'Login successful!' });
-      history.push('/');
+      history.push(history.location.pathname);
     } catch ({ response }) {
       if (response) {
         setError(response.data.msg);

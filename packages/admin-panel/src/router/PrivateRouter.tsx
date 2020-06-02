@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Route, RouteProps } from 'react-router-dom';
+import { Route, RouteProps } from 'react-router-dom';
 import UserContext from '../contexts/UserContext';
 
 interface PrivateRouteProps {
@@ -13,12 +13,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, login }) => {
     return <>{children}</>;
   }
 
-  return (
-    <>
-      <Route exact path="/login" component={login} />
-      <Redirect to="/login" />
-    </>
-  );
+  return <Route path="*" component={login} />;
 };
 
 export default PrivateRoute;

@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import PrivateRoute from './PrivateRouter';
 
 const Login = lazy(() => import('../views/Login'));
-const Dashboard = lazy(() => import('../views/Dashboard'));
+const Directories = lazy(() => import('../views/Directories'));
 const Records = lazy(() => import('../views/Records'));
 const DirectoryConfig = lazy(() => import('../views/DirectoryConfig'));
 
@@ -14,7 +14,8 @@ const Router: React.FC = () => (
         <Switch>
           <Route exact path="/directory/:directoryName/records/" component={Records} />
           <Route exact path="/directory/:directoryName/config/" component={DirectoryConfig} />
-          <Route path="/" component={Dashboard} />
+          <Route exact path="/directory/" component={Directories} />
+          <Route path="/" component={Directories} />
         </Switch>
       </PrivateRoute>
     </Suspense>

@@ -37,8 +37,8 @@ const UserContext: React.FC = ({ children }) => {
   const login = (nextUser: User) => setUser(nextUser);
 
   const logout = () => {
+    cookies.remove('lh_token', { path: '/' });
     setUser(null);
-    cookies.remove('lh_token');
   };
 
   return (

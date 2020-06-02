@@ -59,8 +59,8 @@ const RecordsView: React.FC = () => {
   return (
     <Page>
       <Breadcrumbs aria-label="breadcrumb" className={classes.navLink}>
-        <Link color="inherit" component={RouterLink} to="/">
-          Dashboard
+        <Link color="inherit" component={RouterLink} to="/directory">
+          Directories
         </Link>
         <Typography color="textPrimary">{config.name}</Typography>
       </Breadcrumbs>

@@ -5,7 +5,7 @@ import { StatusType } from '../types/status';
 import { DirectoryConfig } from '../types/directory';
 import StatusContext from './StatusContext';
 import UserContext from './UserContext';
-import * as directoryApi from '../api/directory';
+import * as directoryConfigsApi from '../api/directoryConfigs';
 import { print } from '../utils/debug';
 
 interface DirectoriesContextState {
@@ -63,7 +63,7 @@ const DirectoriesContext: React.FC = ({ children }) => {
 
   const initDirectoryConfigs = async () => {
     try {
-      const directoryConfigs = await directoryApi.getAllConfigs();
+      const directoryConfigs = await directoryConfigsApi.getAllConfigs();
       setConfigs(directoryConfigs);
       addStatus({ message: 'Directories synced!', type: StatusType.info });
     } catch (err) {
