@@ -14,16 +14,16 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 import DirectoryModal from './modals/DirectoryModal';
-import { Directory } from '../types/types';
+import { DirectoryConfig } from '../types/directory';
 
 interface EmptyDirectoryCardProps {
   isEmpty: true;
-  directory?: Directory;
+  directoryConfig?: DirectoryConfig;
 }
 
 interface DirectoryCardProps {
   isEmpty?: false;
-  directory?: Directory;
+  directoryConfig?: DirectoryConfig;
 }
 
 const useStyles = makeStyles({
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 
 const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
   isEmpty,
-  directory
+  directoryConfig
 }: EmptyDirectoryCardProps | DirectoryCardProps) => {
   const classes = useStyles();
   const [isModalOpen, setModalOpen] = React.useState(false);
@@ -67,9 +67,9 @@ const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
     );
   }
 
-  if (!directory) return null;
+  if (!directoryConfig) return null;
 
-  const currentDirectoryPath = `/directory/${encodeURIComponent(directory.name)}`;
+  const currentDirectoryPath = `/directory/${encodeURIComponent(directoryConfig.directoryName)}`;
 
   return (
     <>
@@ -77,13 +77,13 @@ const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
         <CardActionArea className={classes.button} onClick={() => history.push(`${currentDirectoryPath}/records`)}>
           <CardContent>
             <Typography gutterBottom variant="h6" component="h2">
-              {directory.name}
+              {directoryConfig.directoryName}
             </Typography>
           </CardContent>
         </CardActionArea>
         <CardActions className={classes.buttonDetailBar}>
           <Typography variant="body2" color="textSecondary" component="p">
-            {`${directory.numOfRecords} records`}
+            {/* {`${directoryConfig.} records`} */}0 records
           </Typography>
           <IconButton
             onClick={(event) => {

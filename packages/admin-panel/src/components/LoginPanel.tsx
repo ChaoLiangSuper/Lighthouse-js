@@ -11,6 +11,8 @@ import { TextField } from 'formik-material-ui';
 import * as authApi from '../api/authentication';
 import FloatingLoading from './FloatingLoading';
 import UserContext from '../contexts/UserContext';
+import StatusContext from '../contexts/StatusContext';
+import { StatusType } from '../types/status';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,6 +52,7 @@ const LoginPanel: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const userContext = React.useContext(UserContext.Context);
+  const { addStatus } = React.useContext(StatusContext.Context);
   const [error, setError] = React.useState<string | null>(null);
 
   const handleSubmit = async ({ username, password }: FormShape, { setSubmitting }: FormikHelpers<FormShape>) => {
@@ -57,6 +60,7 @@ const LoginPanel: React.FC = () => {
       setError(null);
       const user = await authApi.login(username, password);
       userContext.login(user);
+      addStatus({ type: StatusType.success, message: 'Login successful!' });
       history.push('/');
     } catch ({ response }) {
       if (response) {

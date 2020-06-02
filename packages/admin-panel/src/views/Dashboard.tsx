@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Page from '../components/Page';
 import DirectoryCard from '../components/DirectoryCard';
 import DirectoriesContext from '../contexts/DirectoriesContext';
-import * as directoryApi from '../api/directory';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,14 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard: React.FC = () => {
   const classes = useStyles();
-  const { directories, initConfigs } = React.useContext(DirectoriesContext.Context);
-
-  React.useEffect(() => {
-    (async () => {
-      const configs = await directoryApi.getAllConfigs();
-      initConfigs(configs);
-    })();
-  }, []);
+  const { directoryConfigs } = React.useContext(DirectoriesContext.Context);
 
   return (
     <Page>
@@ -38,9 +30,9 @@ const Dashboard: React.FC = () => {
           <Grid item xs={6} md={4} lg={3}>
             <DirectoryCard isEmpty />
           </Grid>
-          {_.map(directories, (directory, i) => (
+          {_.map(directoryConfigs, (directoryConfig, i) => (
             <Grid item xs={6} md={4} lg={3} key={i}>
-              <DirectoryCard directory={directory} />
+              <DirectoryCard directoryConfig={directoryConfig} />
             </Grid>
           ))}
         </Grid>

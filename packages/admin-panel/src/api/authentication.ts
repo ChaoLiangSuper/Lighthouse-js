@@ -11,8 +11,8 @@ export const login = async (username: string, password: string): Promise<User> =
     username,
     password
   })) as AxiosResponse<{ token: string }>;
-  const { user } = decoder(token) as { user: User };
-  cookies.set('lh_token', token, { expires: new Date(Date.now() + 24 * 3600 * 1000) });
+  const { user, exp } = decoder(token) as { user: User; exp: number };
+  cookies.set('lh_token', token, { expires: new Date(exp * 1000) });
   setToken(token);
   return user;
 };

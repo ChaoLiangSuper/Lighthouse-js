@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Router from './router/Router';
 import ContextsProvider from './contexts';
+import StatusFeedback from './components/StatusFeedback';
 
 const useStyles = makeStyles({
   root: {
@@ -18,6 +19,7 @@ const App: React.FC = () => {
       <ContextsProvider>
         <div className={classes.root}>
           <Router />
+          <StatusFeedback />
         </div>
       </ContextsProvider>
     </>

@@ -4,6 +4,7 @@ import decoder from 'jwt-decode';
 import { User } from '../types/user';
 import cookies from '../utils/cookies';
 import { setToken } from '../api';
+import { print } from '../utils/debug';
 
 interface UserContextState {
   user: User | null;
@@ -29,21 +30,21 @@ const parseToken = () => {
 };
 
 const UserContext: React.FC = ({ children }) => {
-  const [currentUser, setCurrentUser] = React.useState<User | null>(parseToken());
+  const [user, setUser] = React.useState<User | null>(parseToken());
 
-  if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
-    console.log(currentUser);
-  }
+  print('UserContext', user);
 
-  const login = (nextUser: User) => setCurrentUser(nextUser);
+  const login = (nextUser: User) => setUser(nextUser);
 
-  const logout = () => setCurrentUser(null);
+  const logout = () => {
+    setUser(null);
+    cookies.remove('lh_token');
+  };
 
   return (
     <Context.Provider
       value={{
-        user: currentUser,
+        user,
         login,
         logout
       }}

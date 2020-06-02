@@ -22,7 +22,7 @@ export const login: RequestHandler<{}, {}, LoginRequestBody> = async (req, res, 
 
     if (bcrypt.compareSync(password, user.password)) {
       const token = jwt.sign({ user: userWithoutPwd }, config.jwtToken, {
-        expiresIn: '24h'
+        expiresIn: config.tokenExp
       });
 
       res.status(200);

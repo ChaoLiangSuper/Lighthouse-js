@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { RecordCollection, Record } from '../types/types';
+import { print } from '../utils/debug';
 
 interface RecordsContextState {
   records: RecordCollection;
@@ -15,10 +16,7 @@ const Context = React.createContext<RecordsContextState>({
 const RecordsContext: React.FC = ({ children }) => {
   const [records, setRecords] = React.useState<RecordCollection>({});
 
-  if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
-    console.log(records);
-  }
+  print('RecordsContext', records);
 
   const updateRecord = (directoryName: string, record: Record) => {
     setRecords({
