@@ -7,16 +7,19 @@ export interface RequestWithParsedData extends Request {
   user?: ParsedUser;
 }
 
-export type fieldMetadata =
+export type FieldConfig =
   | {
+      fieldName: string;
       defaultValue?: number;
       type: 'number';
     }
   | {
+      fieldName: string;
       defaultValue?: string;
       type: 'string';
     }
   | {
+      fieldName: string;
       defaultValue?: boolean;
       type: 'boolean';
     };

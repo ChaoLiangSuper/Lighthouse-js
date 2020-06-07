@@ -25,15 +25,14 @@ const useStyles = makeStyles((theme) => ({
 const RecordModal: React.FC<RecordModalProps> = ({ open, onClose, recordKey }) => {
   const classes = useStyles();
   const { directoryName } = useParams<UrlParams>();
-  const { directories, updateNumOfRecord } = React.useContext(DirectoriesContext.Context);
+  const { directoryConfigs } = React.useContext(DirectoriesContext.Context);
   const { records, updateRecord } = React.useContext(RecordsContext.Context);
-  const { columns, numOfRecords } = directories[directoryName];
+  const { fields } = directoryConfigs[directoryName];
   const record: Record = recordKey ? records[directoryName][recordKey] : { key: _.uniqueId('new-record-') };
   const [state, setState] = React.useState(record);
 
-  return (
+  return open ? (
     <Modal
-      open={open}
       onClose={onClose}
       title="Record"
       buttons={
@@ -48,7 +47,7 @@ const RecordModal: React.FC<RecordModalProps> = ({ open, onClose, recordKey }) =
             color="primary"
             onClick={() => {
               updateRecord(directoryName, state);
-              if (recordKey === null) updateNumOfRecord(directoryName, numOfRecords + 1);
+              // if (recordKey === null) updateNumOfRecord(directoryName, numOfRecords + 1);
               onClose();
             }}
           >
@@ -61,15 +60,15 @@ const RecordModal: React.FC<RecordModalProps> = ({ open, onClose, recordKey }) =
         <Grid item xs={12}>
           <TextField label="Key" value={recordKey ? recordKey : 'new-record'} variant="outlined" fullWidth disabled />
         </Grid>
-        {_.map(columns, ({ name }) => (
-          <Grid item xs={6} key={name}>
+        {_.map(fields, ({ fieldName }) => (
+          <Grid item xs={6} key={fieldName}>
             <TextField
-              label={name}
-              value={state[name]}
+              label={fieldName}
+              value={state[fieldName]}
               onChange={({ target }) =>
                 setState({
                   ...state,
-                  [name]: target.value
+                  [fieldName]: target.value
                 })
               }
               variant="outlined"
@@ -79,7 +78,7 @@ const RecordModal: React.FC<RecordModalProps> = ({ open, onClose, recordKey }) =
         ))}
       </Grid>
     </Modal>
-  );
+  ) : null;
 };
 
 export default RecordModal;

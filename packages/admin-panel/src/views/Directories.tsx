@@ -28,7 +28,7 @@ const Directories: React.FC = () => {
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={6} md={4} lg={3}>
-            <DirectoryCard isEmpty />
+            <DirectoryCard />
           </Grid>
           {_.map(directoryConfigs, (directoryConfig, i) => (
             <Grid item xs={6} md={4} lg={3} key={i}>

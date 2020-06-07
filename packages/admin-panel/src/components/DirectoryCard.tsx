@@ -16,13 +16,7 @@ import { grey } from '@material-ui/core/colors';
 import DirectoryModal from './modals/DirectoryModal';
 import { DirectoryConfig } from '../types/directory';
 
-interface EmptyDirectoryCardProps {
-  isEmpty: true;
-  directoryConfig?: DirectoryConfig;
-}
-
 interface DirectoryCardProps {
-  isEmpty?: false;
   directoryConfig?: DirectoryConfig;
 }
 
@@ -45,16 +39,13 @@ const useStyles = makeStyles({
   }
 });
 
-const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
-  isEmpty,
-  directoryConfig
-}: EmptyDirectoryCardProps | DirectoryCardProps) => {
+const DirectoryCard: React.FC<DirectoryCardProps> = ({ directoryConfig }) => {
   const classes = useStyles();
   const [isModalOpen, setModalOpen] = React.useState(false);
   const [menuTarget, setMenuTarget] = React.useState<HTMLButtonElement | null>(null);
   const history = useHistory();
 
-  if (isEmpty) {
+  if (!directoryConfig) {
     return (
       <>
         <Card variant="outlined" className={classes.card}>
@@ -66,8 +57,6 @@ const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
       </>
     );
   }
-
-  if (!directoryConfig) return null;
 
   const currentDirectoryPath = `/directory/${encodeURIComponent(directoryConfig.directoryName)}`;
 

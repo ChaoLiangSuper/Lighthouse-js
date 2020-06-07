@@ -7,20 +7,23 @@ export const testData = `
 
   INSERT INTO lh_metadata (
     "directoryName", fields
-  ) VALUES ('directory1', '{
-    "number field": {
-      "type": "number"
+  ) VALUES ('directory1', '[
+    {
+      "fieldName": "number field",
+      "type": "NUMBER"
     },
-    "string field": {
-      "type": "string"
+    {
+      "fieldName": "string field",
+      "type": "STRING"
     }
-  }');
+  ]');
 
   INSERT INTO lh_metadata (
     "directoryName", fields
-  ) VALUES ('directory2', '{
-    "number field": {
-      "type": "number"
+  ) VALUES ('directory2', '[
+    {
+      "fieldName": "number field",
+      "type": "NUMBER"
     }
-  }');
+  ]');
 `;

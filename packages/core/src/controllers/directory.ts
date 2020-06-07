@@ -1,14 +1,6 @@
 import { RequestHandler } from 'express';
 import * as metadataModel from '../models/metadata';
-import { fieldMetadata } from '../types';
 import { ErrorHandler } from '../utils/errorHandler';
-
-interface NewDirectoryBody {
-  directoryName: string;
-  fields: {
-    [fieldName: string]: fieldMetadata;
-  };
-}
 
 export const getAllDirectories: RequestHandler = async (_req, res, next) => {
   try {
@@ -30,7 +22,7 @@ export const getOneDirectory: RequestHandler<{ directoryId: string }> = async (r
   }
 };
 
-export const newDirectory: RequestHandler<{}, {}, NewDirectoryBody> = async (req, res, next) => {
+export const newDirectory: RequestHandler<{}, {}, metadataModel.DirectoryConfig> = async (req, res, next) => {
   try {
     const { directoryName, fields } = req.body;
     const result = await metadataModel.addMetadata(directoryName, fields);
@@ -41,11 +33,11 @@ export const newDirectory: RequestHandler<{}, {}, NewDirectoryBody> = async (req
   }
 };
 
-export const updateDirectory: RequestHandler<{ directoryId: string }, {}, Partial<NewDirectoryBody>> = async (
-  req,
-  res,
-  next
-) => {
+export const updateDirectory: RequestHandler<
+  { directoryId: string },
+  {},
+  Partial<metadataModel.DirectoryConfig>
+> = async (req, res, next) => {
   try {
     const { directoryName, fields } = req.body;
     const result = await metadataModel.updateMetadata(req.params.directoryId, directoryName, fields);

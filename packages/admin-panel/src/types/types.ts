@@ -1,27 +1,14 @@
-import { fieldType } from '../constant';
-
 export type UrlParams = {
   directoryName: string;
 };
 
-export type ValueType = string | number | boolean;
+export enum ValueTypes {
+  STRING = 'STRING',
+  NUMBER = 'NUMBER',
+  BOOLEAN = 'BOOLEAN'
+}
 
-export type Column = {
-  name: string;
-  type: fieldType;
-  isOptional: boolean;
-  defaultValue: ValueType;
-};
-
-export type DirectoryCollection = {
-  [directoryName: string]: Directory;
-};
-
-export type Directory = {
-  name: string;
-  columns: Column[];
-  numOfRecords: number;
-};
+export type ValidValues = string | number | boolean;
 
 export type RecordCollection = {
   [directoryName: string]: {

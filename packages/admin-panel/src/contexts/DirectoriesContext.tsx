@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react';
-import { DirectoryCollection, Column } from '../types/types';
 import { StatusType } from '../types/status';
 import { DirectoryConfig } from '../types/directory';
 import StatusContext from './StatusContext';
@@ -9,85 +8,57 @@ import * as directoryConfigsApi from '../api/directoryConfigs';
 import { print } from '../utils/debug';
 
 interface DirectoriesContextState {
-  directories: DirectoryCollection;
-  appDirectory: (s: string) => void;
-  updateDirectories: (s: string) => (columns: Column[]) => void;
-  updateNumOfRecord: (s: string, n: number) => void;
   directoryConfigs: Record<string, DirectoryConfig>;
+  updateDirectoryConfig: (dictionaryConfig: DirectoryConfig) => void;
 }
 
 const Context = React.createContext<DirectoriesContextState>({
-  directories: {},
-  appDirectory: _.noop,
-  updateDirectories: () => _.noop,
-  updateNumOfRecord: _.noop,
-  directoryConfigs: {}
+  directoryConfigs: {},
+  updateDirectoryConfig: _.noop
 });
 
 const DirectoriesContext: React.FC = ({ children }) => {
-  const [directories, setDirectories] = React.useState<DirectoryCollection>({});
-  const [directoryConfigs, setConfigs] = React.useState<Record<string, DirectoryConfig>>({});
+  // Global contexts
   const { addStatus } = React.useContext(StatusContext.Context);
   const { user } = React.useContext(UserContext.Context);
 
+  // Local states
+  const [directoryConfigs, setDirectoryConfigs] = React.useState<Record<string, DirectoryConfig>>({});
+
+  // DEBUG
   print('DirectoriesContext', directoryConfigs);
 
-  const appDirectory = (directoryName: string) => {
-    setDirectories({
-      ...directories,
-      [directoryName]: {
-        name: directoryName,
-        columns: [],
-        numOfRecords: 0
-      }
-    });
-  };
-  const updateDirectories = (directoryName: string) => (columns: Column[]) => {
-    setDirectories({
-      ...directories,
-      [directoryName]: {
-        ...directories[directoryName],
-        columns
-      }
-    });
-  };
-  const updateNumOfRecord = (directoryName: string, number: number) => {
-    setDirectories({
-      ...directories,
-      [directoryName]: {
-        ...directories[directoryName],
-        numOfRecords: number
-      }
-    });
-  };
-
-  const initDirectoryConfigs = async () => {
+  const initDirectoryConfigs = React.useCallback(async () => {
     try {
-      const directoryConfigs = await directoryConfigsApi.getAllConfigs();
-      setConfigs(directoryConfigs);
+      const directoryConfigs = await directoryConfigsApi.getAllDirectoryConfigs();
+      setDirectoryConfigs(directoryConfigs);
       addStatus({ message: 'Directories synced!', type: StatusType.info });
     } catch (err) {
       addStatus({ message: 'Syncing directories faild, please try later!', type: StatusType.error });
     }
-  };
+  }, [addStatus]);
 
-  const clearDirectoryConfigs = () => setConfigs({});
+  const clearDirectoryConfigs = () => setDirectoryConfigs({});
 
   React.useEffect(() => {
     if (user) {
       initDirectoryConfigs();
     }
     return () => clearDirectoryConfigs();
-  }, [user]);
+  }, [user, initDirectoryConfigs]);
+
+  const updateDirectoryConfig = React.useCallback((directoryConfig: DirectoryConfig) => {
+    setDirectoryConfigs((prevConfigs) => ({
+      ...prevConfigs,
+      [directoryConfig.directoryName]: directoryConfig
+    }));
+  }, []);
 
   return (
     <Context.Provider
       value={{
-        directories,
-        appDirectory,
-        updateDirectories,
-        updateNumOfRecord,
-        directoryConfigs
+        directoryConfigs,
+        updateDirectoryConfig
       }}
     >
       {children}

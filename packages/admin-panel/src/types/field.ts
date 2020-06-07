@@ -1,27 +1,16 @@
-export type fieldConfig =
-  | {
-      defaultValue?: number;
-      type: 'number';
-    }
-  | {
-      defaultValue?: string;
-      type: 'string';
-    }
-  | {
-      defaultValue?: boolean;
-      type: 'boolean';
-    };
-
 export type dataType =
   | {
+      fieldName: string;
       value: number;
       type: 'number';
     }
   | {
+      fieldName: string;
       value: string;
       type: 'string';
     }
   | {
+      fieldName: string;
       value: boolean;
       type: 'boolean';
     };

@@ -1,21 +1,28 @@
 import _ from 'lodash';
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import clsx from 'clsx';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import clsx from 'clsx';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import Modal from '../Modal';
-import { Column } from '../../types/types';
-import { fieldType, fieldTypeMapping } from '../../constant';
+import DirectoriesContext from '../../contexts/DirectoriesContext';
+import StatusContext from '../../contexts/StatusContext';
+import { ValueTypes } from '../../types/types';
+import { FieldConfig } from '../../types/directory';
+import { valueTypesMapping } from '../../constant';
+import FormField from '../FormField';
+import FloatingLoading from '../FloatingLoading';
+import * as directoryConfigsApi from '../../api/directoryConfigs';
+import { StatusType } from '../../types/status';
 
 interface ConfigModalProps {
-  open: boolean;
   onClose: () => void;
-  columns: Column[];
-  defaultIndex: number;
-  updateDirectoryColumns: (columns: Column[]) => void;
+  selectedIndex: number;
+  moveToNextIndex: () => void;
+  directoryName: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -28,178 +35,150 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const emptyColumnState: Column = {
-  name: '',
-  type: fieldType.STRING,
-  isOptional: false,
+const defaultField: FieldConfig = {
+  fieldName: '',
+  type: ValueTypes.STRING,
   defaultValue: ''
 };
 
-const ConfigModal: React.FC<ConfigModalProps> = ({ open, onClose, columns, defaultIndex, updateDirectoryColumns }) => {
+const generateDefaultValue = (type: ValueTypes) => {
+  switch (type) {
+    case ValueTypes.BOOLEAN:
+      return (
+        <FormField name="defaultValue" select={true} label="Default value">
+          <MenuItem value="">No default value</MenuItem>
+          <MenuItem value="true">Yes</MenuItem>
+          <MenuItem value="false">No</MenuItem>
+        </FormField>
+      );
+    case ValueTypes.NUMBER:
+      return <FormField name="defaultValue" type="number" label="Default value" />;
+    case ValueTypes.STRING:
+      return <FormField name="defaultValue" label="Default value" />;
+    default:
+      return null;
+  }
+};
+
+const ConfigModal: React.FC<ConfigModalProps> = ({ onClose, selectedIndex, moveToNextIndex, directoryName }) => {
   const classes = useStyles();
-  const [currentIndex, setCurrentIndex] = React.useState(defaultIndex);
-  const [state, setState] = React.useState(columns[currentIndex] || emptyColumnState);
+  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoriesContext.Context);
+  const { addStatus } = React.useContext(StatusContext.Context);
 
-  React.useEffect(() => {
-    setState(columns[currentIndex] || emptyColumnState);
-  }, [currentIndex, columns]);
+  const { fields } = directoryConfigs[directoryName];
 
-  React.useEffect(() => {
-    setCurrentIndex(defaultIndex);
-  }, [defaultIndex]);
+  const initialValues = (selectedIndex: number) => fields[selectedIndex] || defaultField;
 
-  const generateDefaultValue = (type: fieldType) => {
-    switch (type) {
-      case fieldType.BOOLEAN:
-        return (
-          <TextField
-            select
-            label="Default value"
-            helperText="The default value for this column"
-            variant="outlined"
-            value={state.defaultValue === '' ? '' : (state.defaultValue as boolean) ? 1 : 0}
-            onChange={({ target }) =>
-              setState({
-                ...state,
-                defaultValue: Boolean(target.value)
-              })
-            }
-            fullWidth
-          >
-            <MenuItem value={1}>Yes</MenuItem>
-            <MenuItem value={0}>No</MenuItem>
-          </TextField>
-        );
-      case fieldType.NUMBER: {
-        const isError = _.isNaN(Number(state.defaultValue));
-        return (
-          <TextField
-            label="Default value"
-            helperText={isError ? 'The value must be a number' : 'The default value for this column'}
-            variant="outlined"
-            value={state.defaultValue}
-            onChange={({ target }) =>
-              setState({
-                ...state,
-                defaultValue: target.value
-              })
-            }
-            fullWidth
-            error={isError}
-          />
-        );
+  const validationSchema = Yup.object().shape({
+    fieldName: Yup.string()
+      .test('no-duplicate', 'Feild name exists', (value) => {
+        const index = _.findIndex(fields, ({ fieldName }) => fieldName === value);
+        return index === selectedIndex || index === -1;
+      })
+      .required('Required'),
+    type: Yup.string().required('Required'),
+    defaultValue: Yup.mixed().test('valid-value', 'Not valid', async function(value) {
+      switch (this.parent.type) {
+        case ValueTypes.STRING: {
+          return await Yup.string().isValid(value);
+        }
+        case ValueTypes.BOOLEAN: {
+          return value === undefined || value === 'true' || value === 'false';
+        }
+        case ValueTypes.NUMBER: {
+          return value === undefined || !_.isNaN(Number(value));
+        }
+        default:
+          return false;
       }
-      case fieldType.STRING:
-        return (
-          <TextField
-            label="Default value"
-            helperText="The default value for this column"
-            variant="outlined"
-            value={state.defaultValue as string}
-            onChange={({ target }) =>
-              setState({
-                ...state,
-                defaultValue: target.value
-              })
-            }
-            fullWidth
-          />
-        );
-      default:
-        return null;
+    })
+  });
+
+  const handleSubmit = async (values: FieldConfig) => {
+    const newfields = [...fields];
+    newfields[selectedIndex] = values;
+    try {
+      const updatedDirectoryConfig = await directoryConfigsApi.updateDirectoryConfig({
+        ...directoryConfigs[directoryName],
+        fields: newfields
+      });
+      updateDirectoryConfig(updatedDirectoryConfig);
+      addStatus({ message: 'Directory updated.', type: StatusType.info });
+      return Promise.resolve();
+    } catch (err) {
+      addStatus({ message: 'Directory update failed.', type: StatusType.error });
+      return Promise.reject();
     }
   };
 
-  const saveColumns = () => {
-    const newColumns = [...columns];
-    newColumns[currentIndex] = state;
-    updateDirectoryColumns(newColumns);
-  };
-
-  const validateState = () => {
-    return _.isEmpty(state.name) || (state.type === fieldType.NUMBER && _.isNaN(Number(state.defaultValue)));
-  };
-
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Column config"
-      buttons={
-        <>
-          <Button className={classes.button} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button
-            disabled={validateState()}
-            className={classes.button}
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              saveColumns();
-              onClose();
-            }}
-          >
-            Save
-          </Button>
-          <Button
-            disabled={validateState()}
-            className={clsx(classes.button, classes.nextButton)}
-            variant="contained"
-            onClick={() => {
-              saveColumns();
-              setCurrentIndex(currentIndex + 1);
-            }}
-          >
-            Save and next
-          </Button>
-        </>
-      }
+    <Formik
+      initialValues={initialValues(selectedIndex)}
+      onSubmit={handleSubmit}
+      validationSchema={validationSchema}
+      validateOnMount={true}
     >
-      <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <TextField
-            label="Name"
-            variant="outlined"
-            helperText="Type a name for this column"
-            value={state.name}
-            onChange={({ target }) =>
-              setState({
-                ...state,
-                name: target.value
-              })
+      {({ submitForm, isValid, values, setFieldValue, isSubmitting, setValues }) => (
+        <Form>
+          <Modal
+            onClose={onClose}
+            title="Column config"
+            buttons={
+              <>
+                <Button disabled={isSubmitting} className={classes.button} onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  disabled={isSubmitting || !isValid}
+                  className={classes.button}
+                  variant="contained"
+                  color="primary"
+                  onClick={submitForm}
+                >
+                  Save
+                </Button>
+                <Button
+                  disabled={isSubmitting || !isValid}
+                  className={clsx(classes.button, classes.nextButton)}
+                  variant="contained"
+                  onClick={async () => {
+                    await submitForm();
+                    moveToNextIndex();
+                    setValues(initialValues(selectedIndex + 1));
+                  }}
+                >
+                  Save and next
+                </Button>
+              </>
             }
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            select
-            label="Type"
-            helperText="Select a type for this column"
-            variant="outlined"
-            value={state.type}
-            onChange={({ target }) =>
-              setState({
-                ...state,
-                type: target.value as fieldType,
-                defaultValue: ''
-              })
-            }
-            fullWidth
           >
-            {_.map(fieldType, (type) => (
-              <MenuItem key={type} value={type}>
-                {fieldTypeMapping[type]}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-        <Grid item xs={12}>
-          {generateDefaultValue(state.type)}
-        </Grid>
-      </Grid>
-    </Modal>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <FormField name="fieldName" label="Field name" />
+              </Grid>
+              <Grid item xs={6}>
+                <FormField
+                  name="type"
+                  select={true}
+                  label="Field type"
+                  changeEffect={() => setFieldValue('defaultValue', initialValues(selectedIndex).defaultValue)}
+                >
+                  {_.map(ValueTypes, (type) => (
+                    <MenuItem key={type} value={type}>
+                      {valueTypesMapping[type]}
+                    </MenuItem>
+                  ))}
+                </FormField>
+              </Grid>
+              <Grid item xs={12}>
+                {generateDefaultValue(values.type)}
+              </Grid>
+            </Grid>
+            {isSubmitting && <FloatingLoading text="Updating..." />}
+          </Modal>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

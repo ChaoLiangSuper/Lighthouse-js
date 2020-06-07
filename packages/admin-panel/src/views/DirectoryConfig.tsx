@@ -20,10 +20,10 @@ import HorizontalContainer from '../components/HorizontalContainer';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TypeChip from '../components/TypeChip';
-import { ValueType, UrlParams } from '../types/types';
+import { ValueTypes, UrlParams } from '../types/types';
 import ConfigModal from '../components/modals/ConfigModal';
-import { fieldType } from '../constant';
 import DirectoriesContext from '../contexts/DirectoriesContext';
+import { FieldConfig } from '../types/directory';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -62,30 +62,34 @@ const useStyles = makeStyles((theme) => ({
 const DirectoryConfig: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const params = useParams<UrlParams>();
-  const { directories, updateDirectories } = React.useContext(DirectoriesContext.Context);
-  const [isModalOpen, setModalOpen] = React.useState(false);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const currentDirectory = directories[params.directoryName];
+  const { directoryName: currentDirectoryName } = useParams<UrlParams>();
+  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoriesContext.Context);
+  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
 
-  if (_.isUndefined(currentDirectory)) {
+  if (_.isUndefined(directoryConfigs[currentDirectoryName])) {
     return <Redirect to="/" />;
   }
 
-  const updateCurrentDirectoryColumns = updateDirectories(currentDirectory.name);
+  const { fields } = directoryConfigs[currentDirectoryName];
 
-  const renderDefaultValue = (type: fieldType, defaultValue: ValueType) => {
+  const renderDefaultValue = ({ type, defaultValue }: FieldConfig) => {
     if (defaultValue === '') return '─';
     switch (type) {
-      case fieldType.BOOLEAN:
+      case ValueTypes.BOOLEAN:
         return defaultValue ? 'Yes' : 'No';
-      case fieldType.STRING:
-      case fieldType.NUMBER:
+      case ValueTypes.STRING:
+      case ValueTypes.NUMBER:
         return defaultValue;
       default:
         return null;
     }
   };
+
+  const moveToNextIndex = () =>
+    setSelectedIndex((prevIndex) => {
+      if (typeof prevIndex === 'number') return prevIndex + 1;
+      return prevIndex;
+    });
 
   return (
     <Page>
@@ -93,26 +97,26 @@ const DirectoryConfig: React.FC = () => {
         <Link color="inherit" component={RouterLink} to="/directory">
           Directories
         </Link>
-        <Link color="inherit" component={RouterLink} to={`/directory/${currentDirectory.name}/records`}>
-          {currentDirectory.name}
+        <Link color="inherit" component={RouterLink} to={`/directory/${currentDirectoryName}/records`}>
+          {currentDirectoryName}
         </Link>
         <Typography color="textPrimary">Schema config</Typography>
       </Breadcrumbs>
       <HorizontalContainer>
         <div className={classes.sidebar}>
           <List component="nav" subheader={<ListSubheader component="div">Directory List</ListSubheader>}>
-            {_.map(directories, (directory) =>
-              directory.name === currentDirectory.name ? (
-                <ListItem key={directory.name} className={classes.activeButton}>
-                  <ListItemText primary={directory.name} />
+            {_.map(directoryConfigs, ({ directoryName }) =>
+              directoryName === currentDirectoryName ? (
+                <ListItem key={directoryName} className={classes.activeButton}>
+                  <ListItemText primary={directoryName} />
                 </ListItem>
               ) : (
                 <ListItem
-                  key={directory.name}
+                  key={directoryName}
                   button
-                  onClick={() => history.push(`/directory/${encodeURIComponent(directory.name)}/config`)}
+                  onClick={() => history.push(`/directory/${encodeURIComponent(directoryName)}/config`)}
                 >
-                  <ListItemText primary={directory.name} />
+                  <ListItemText primary={directoryName} />
                 </ListItem>
               )
             )}
@@ -129,43 +133,47 @@ const DirectoryConfig: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.map(currentDirectory.columns, (column, index) => (
-                <TableRow
-                  key={column.name}
-                  onClick={() => {
-                    setSelectedIndex(index);
-                    setModalOpen(true);
-                  }}
-                  hover
-                  className={clsx(classes.pointer, classes.configRow)}
-                >
-                  <TableCell>{column.name}</TableCell>
-                  <TableCell>
-                    <TypeChip type={column.type} />
-                  </TableCell>
-                  <TableCell>{renderDefaultValue(column.type, column.defaultValue)}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const newColumns = [...currentDirectory.columns];
-                        _.pullAt(newColumns, index);
-                        updateCurrentDirectoryColumns(newColumns);
-                      }}
-                      className={classes.deleteButton}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {_.map(fields, (field, index) => {
+                const { fieldName, type } = field;
+                return (
+                  <TableRow
+                    key={fieldName}
+                    onClick={() => {
+                      setSelectedIndex(index);
+                    }}
+                    hover
+                    className={clsx(classes.pointer, classes.configRow)}
+                  >
+                    <TableCell>{fieldName}</TableCell>
+                    <TableCell>
+                      <TypeChip type={type} />
+                    </TableCell>
+                    <TableCell>{renderDefaultValue(field)}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newFields = [...fields];
+                          _.pullAt(newFields, index);
+                          updateDirectoryConfig({
+                            ...directoryConfigs[currentDirectoryName],
+                            fields: newFields
+                          });
+                        }}
+                        className={classes.deleteButton}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
               <TableRow
                 hover
                 className={clsx(classes.pointer, classes.configRow)}
                 onClick={() => {
-                  setSelectedIndex(currentDirectory.columns.length);
-                  setModalOpen(true);
+                  setSelectedIndex(fields.length);
                 }}
               >
                 <TableCell colSpan={4} align="center">
@@ -176,16 +184,16 @@ const DirectoryConfig: React.FC = () => {
           </Table>
         </div>
       </HorizontalContainer>
-      <ConfigModal
-        open={isModalOpen}
-        onClose={() => {
-          setSelectedIndex(0);
-          setModalOpen(false);
-        }}
-        columns={currentDirectory.columns}
-        defaultIndex={selectedIndex}
-        updateDirectoryColumns={updateCurrentDirectoryColumns}
-      />
+      {selectedIndex !== null ? (
+        <ConfigModal
+          selectedIndex={selectedIndex}
+          moveToNextIndex={moveToNextIndex}
+          onClose={() => {
+            setSelectedIndex(null);
+          }}
+          directoryName={currentDirectoryName}
+        />
+      ) : null}
     </Page>
   );
 };

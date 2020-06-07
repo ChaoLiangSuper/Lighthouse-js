@@ -6,7 +6,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
 interface ModalProps {
-  open: boolean;
   onClose: () => void;
   title: string;
   buttons?: React.ReactNode;
@@ -26,9 +25,9 @@ const useStyles = makeStyles<Theme, { maxHeight?: number }>((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(2, 4, 3),
     borderRadius: 4,
-    width: `calc(100vw - ${theme.spacing(20)}px)`,
+    width: `calc(100% - ${theme.spacing(20)}px)`,
     maxWidth: 1000,
-    height: `calc(100vh - ${theme.spacing(20)}px)`,
+    // height: `calc(100vh - ${theme.spacing(20)}px)`,
     maxHeight: (props) => props.maxHeight || 700
   },
   titleBar: {
@@ -50,11 +49,11 @@ const useStyles = makeStyles<Theme, { maxHeight?: number }>((theme) => ({
   }
 }));
 
-const Modal: React.FC<ModalProps> = ({ open, onClose, title, children, buttons, maxHeight }) => {
+const Modal: React.FC<ModalProps> = ({ onClose, title, children, buttons, maxHeight }) => {
   const classes = useStyles({ maxHeight });
 
   return (
-    <MaterialUiModal open={open} onClose={onClose} className={classes.root}>
+    <MaterialUiModal open={true} onClose={onClose} className={classes.root}>
       <div className={classes.paper}>
         <div className={classes.titleBar}>
           <Typography variant="h5" component="span" color="textSecondary" className={classes.title}>

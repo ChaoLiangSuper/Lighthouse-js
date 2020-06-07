@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import clsx from 'clsx';
-import { Redirect, useRouteMatch, useHistory, Link as RouterLink } from 'react-router-dom';
+import { Redirect, useHistory, Link as RouterLink, useParams } from 'react-router-dom';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
@@ -44,17 +44,17 @@ const useStyles = makeStyles((theme) => ({
 const RecordsView: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { params } = useRouteMatch<UrlParams>();
-  const [isModalOpen, setModalOpen] = React.useState(false);
+  const { directoryName } = useParams<UrlParams>();
   const [selectedRecordKey, setSelectedRecordKey] = React.useState<string | null>(null);
-  const { directories } = React.useContext(DirectoriesContext.Context);
+  const { directoryConfigs } = React.useContext(DirectoriesContext.Context);
   const { records: recordsCollection } = React.useContext(RecordsContext.Context);
-  const config = directories[params.directoryName];
-  const records = recordsCollection[params.directoryName];
 
-  if (_.isUndefined(config)) {
+  if (!directoryConfigs[directoryName]) {
     return <Redirect to="/" />;
   }
+
+  const { fields } = directoryConfigs[directoryName];
+  const records = recordsCollection[directoryName];
 
   return (
     <Page>
@@ -62,11 +62,11 @@ const RecordsView: React.FC = () => {
         <Link color="inherit" component={RouterLink} to="/directory">
           Directories
         </Link>
-        <Typography color="textPrimary">{config.name}</Typography>
+        <Typography color="textPrimary">{directoryName}</Typography>
       </Breadcrumbs>
       <div className={classes.titleBar}>
         <Typography variant="h4" component="span" className={classes.title}>
-          {config.name}{' '}
+          {directoryName}{' '}
         </Typography>
         <Button
           variant="contained"
@@ -79,49 +79,48 @@ const RecordsView: React.FC = () => {
         </Button>
       </div>
       <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Key</TableCell>
-            {_.map(config.columns, ({ name }) => (
-              <TableCell key={name}>{name}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+        {_.isEmpty(records) ? null : (
+          <TableHead>
+            <TableRow>
+              <TableCell>Key</TableCell>
+              {_.map(fields, ({ fieldName }) => (
+                <TableCell key={fieldName}>{fieldName}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+        )}
         <TableBody>
           {_.map(records, (record) => (
             <TableRow
-              hover
+              hover={true}
               key={record.key}
               onClick={() => {
-                setModalOpen(true);
                 setSelectedRecordKey(record.key);
               }}
               className={clsx(classes.pointer, classes.recordRow)}
             >
               <TableCell>{record.key}</TableCell>
-              {_.map(config.columns, ({ name }) => (
-                <TableCell key={name}>{record[name]}</TableCell>
+              {_.map(fields, ({ fieldName }) => (
+                <TableCell key={fieldName}>{record[fieldName]}</TableCell>
               ))}
             </TableRow>
           ))}
           <TableRow
-            hover
+            hover={true}
             className={clsx(classes.pointer, classes.recordRow)}
             onClick={() => {
-              setModalOpen(true);
               setSelectedRecordKey(null);
             }}
           >
-            <TableCell colSpan={config.columns.length + 1} align="center">
+            <TableCell colSpan={fields.length + 1} align="center">
               Add new record
             </TableCell>
           </TableRow>
         </TableBody>
       </Table>
       <RecordModal
-        open={isModalOpen}
+        open={!!selectedRecordKey}
         onClose={() => {
-          setModalOpen(false);
           setSelectedRecordKey(null);
         }}
         recordKey={selectedRecordKey}

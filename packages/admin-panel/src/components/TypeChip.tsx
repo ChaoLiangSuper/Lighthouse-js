@@ -2,10 +2,11 @@ import React from 'react';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { fieldTypeMapping, fieldType } from '../constant';
+import { ValueTypes } from '../types/types';
+import { valueTypesMapping } from '../constant';
 
 interface TypeChipProps {
-  type: fieldType;
+  type: ValueTypes;
 }
 
 const useStyles = makeStyles({
@@ -27,11 +28,11 @@ const TypeChip: React.FC<TypeChipProps> = ({ type }) => {
   const classes = useStyles();
   return (
     <Chip
-      label={fieldTypeMapping[type]}
+      label={valueTypesMapping[type]}
       className={clsx({
-        [classes.string]: type === fieldType.STRING,
-        [classes.number]: type === fieldType.NUMBER,
-        [classes.boolean]: type === fieldType.BOOLEAN
+        [classes.string]: type === ValueTypes.STRING,
+        [classes.number]: type === ValueTypes.NUMBER,
+        [classes.boolean]: type === ValueTypes.BOOLEAN
       })}
     />
   );

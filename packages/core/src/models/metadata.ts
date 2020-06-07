@@ -1,15 +1,13 @@
 import _ from 'lodash';
 import { Pool } from 'pg';
 import { config } from '../config';
-import { fieldMetadata } from '../types';
+import { FieldConfig } from '../types';
 
 const TABLE_NAME = 'lh_metadata';
 
-export interface Metadata {
+export interface DirectoryConfig {
   directoryName: string;
-  fields: {
-    [fieldName: string]: fieldMetadata;
-  };
+  fields: FieldConfig[];
 }
 
 export const createMetadataTable = `
@@ -25,7 +23,7 @@ export const getAllMetadata = async () => {
   try {
     const { rows, rowCount } = await pool.query(`SELECT * FROM ${TABLE_NAME};`);
     return {
-      data: rows,
+      data: rows as DirectoryConfig[],
       rowCount
     };
   } finally {
@@ -37,13 +35,16 @@ export const getOneMetadata = async (directoryId: string) => {
   const pool = new Pool(config.db);
   try {
     const { rows } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE id = $1;`, [directoryId]);
-    return rows[0];
+    return rows[0] as DirectoryConfig;
   } finally {
     pool.end();
   }
 };
 
-export const addMetadata = async (directoryName: Metadata['directoryName'], fields: Metadata['fields']) => {
+export const addMetadata = async (
+  directoryName: DirectoryConfig['directoryName'],
+  fields: DirectoryConfig['fields']
+) => {
   const pool = new Pool(config.db);
   try {
     const { rows } = await pool.query(
@@ -54,7 +55,7 @@ export const addMetadata = async (directoryName: Metadata['directoryName'], fiel
     `,
       [directoryName, fields]
     );
-    return rows[0];
+    return rows[0] as DirectoryConfig;
   } finally {
     pool.end();
   }
@@ -62,12 +63,12 @@ export const addMetadata = async (directoryName: Metadata['directoryName'], fiel
 
 export const updateMetadata = async (
   directoryId: string,
-  directoryName?: Metadata['directoryName'],
-  fields?: Metadata['fields']
+  directoryName?: DirectoryConfig['directoryName'],
+  fields?: DirectoryConfig['fields']
 ) => {
   let fieldIndex = 1;
   const fieldTexts: string[] = [];
-  const fieldValues: (string | Metadata['directoryName'] | Metadata['fields'])[] = [];
+  const fieldValues: (string | DirectoryConfig['directoryName'] | DirectoryConfig['fields'])[] = [];
 
   _.forEach(
     {
@@ -76,8 +77,8 @@ export const updateMetadata = async (
     },
     (fieldValue, key) => {
       if (fieldValue) {
-        fieldTexts.push(`${key} = $${fieldIndex}`);
-        fieldValues.push(fieldValue);
+        fieldTexts.push(`"${key}" = $${fieldIndex}`);
+        fieldValues.push(key === 'fields' ? JSON.stringify(fieldValue) : fieldValue);
         fieldIndex++;
       }
     }
@@ -97,7 +98,7 @@ export const updateMetadata = async (
 
   try {
     const { rows } = await pool.query(query, [...fieldValues, directoryId]);
-    return rows[0];
+    return rows[0] as DirectoryConfig;
   } finally {
     pool.end();
   }

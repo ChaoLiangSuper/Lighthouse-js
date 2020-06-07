@@ -20,7 +20,7 @@ const StatusContext: React.FC = ({ children }) => {
 
   print('StatusContext', statusList);
 
-  const addStatus = (newStatus: Pick<Status, 'message' | 'type'>) => {
+  const addStatus = React.useCallback((newStatus: Pick<Status, 'message' | 'type'>) => {
     setStatusList((prevStatusList) => [
       ...prevStatusList,
       {
@@ -28,15 +28,15 @@ const StatusContext: React.FC = ({ children }) => {
         id: _.uniqueId('status-')
       }
     ]);
-  };
+  }, []);
 
-  const removeStatus = (id: string) => {
+  const removeStatus = React.useCallback((id: string) => {
     setStatusList((prevStatusList) => {
       const newStatusList = [...prevStatusList];
       _.remove(newStatusList, (feedback) => feedback.id === id);
       return newStatusList;
     });
-  };
+  }, []);
 
   return (
     <Context.Provider
