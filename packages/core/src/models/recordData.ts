@@ -1,85 +1,83 @@
-import { Pool } from 'pg';
-import { config } from '../config';
-import { dataType } from '../types';
+import * as Sequelize from 'sequelize';
+import { DataType } from '../types';
 
 const TABLE_NAME = 'lh_record_data';
 
-export interface RecordData {
-  directoryId: number;
-  recordId: number;
-  data: {
-    [fieldName: string]: dataType;
-  };
+export interface RecordDataAttributes {
+  readonly id: string;
+  readonly directoryConfigId: string;
+  data: Record<string, DataType>;
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 }
 
-export const createRecordDataTable = `
-  CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
-    "directoryId" INTEGER NOT NULL,
-    "recordId" INTEGER NOT NULL,
-    data JSON
-  );
-`;
+class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
+  readonly id: string;
+  readonly directoryConfigId: string;
+  data: Record<string, DataType>;
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 
-export const getAllRecords = async (directoryId: string) => {
-  const pool = new Pool(config.db);
-  try {
-    const { rows, rowCount } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE "directoryId" = $1;`, [directoryId]);
+  static initialize(sequelize: Sequelize.Sequelize) {
+    this.init(
+      {
+        id: {
+          type: Sequelize.DataTypes.UUID,
+          primaryKey: true,
+          defaultValue: Sequelize.DataTypes.UUIDV4
+        },
+        directoryConfigId: {
+          type: Sequelize.DataTypes.UUID,
+          allowNull: false
+        },
+        data: {
+          type: Sequelize.DataTypes.JSON,
+          allowNull: false
+        }
+      },
+      {
+        tableName: TABLE_NAME,
+        sequelize,
+        timestamps: true
+      }
+    );
+  }
+
+  static async getAllRecordData(directoryConfigId: RecordDataAttributes['directoryConfigId']) {
+    const rows = await this.findAll({ where: { directoryConfigId } });
     return {
       data: rows,
-      rowCount
+      rowCount: rows.length
     };
-  } finally {
-    pool.end();
   }
-};
 
-export const getOneRecord = async (directoryId: string, recordId: string) => {
-  const pool = new Pool(config.db);
-  try {
-    const { rows } = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE "directoryId" = $1 AND "recordId" = $2;`, [
-      directoryId,
-      recordId
-    ]);
+  static async getOneRecordData(
+    directoryConfigId: RecordDataAttributes['directoryConfigId'],
+    recordDataId: RecordDataAttributes['id']
+  ) {
+    const data = await this.findOne({ where: { directoryConfigId, id: recordDataId } });
+    return data;
+  }
+
+  static async addRecordData(
+    directoryConfigId: RecordDataAttributes['directoryConfigId'],
+    newRecordData: Pick<RecordDataAttributes, 'data'>
+  ) {
+    const data = await this.create({
+      ...newRecordData,
+      directoryConfigId
+    });
+    return data;
+  }
+
+  static async updateRecordData(
+    directoryConfigId: RecordDataAttributes['directoryConfigId'],
+    recordDataId: RecordDataAttributes['id'],
+    updatedRecordData: Partial<RecordDataAttributes>
+  ) {
+    const [, rows] = await this.update(updatedRecordData, { where: { directoryConfigId, id: recordDataId } });
     return rows[0];
-  } finally {
-    pool.end();
   }
-};
+}
 
-export const addRecord = async (directoryId: string, recordId: RecordData['recordId'], data: RecordData['data']) => {
-  const pool = new Pool(config.db);
-  try {
-    const record = await pool.query(
-      `
-    INSERT INTO ${TABLE_NAME} (
-      "directoryId", "recordId", data
-    ) VALUES ($1, $2, $3) RETURNING *
-  `,
-      [directoryId, recordId, data]
-    );
-    return record;
-  } finally {
-    pool.end();
-  }
-};
-
-export const updateRecord = async (directoryId: string, recordId: string, data?: RecordData['data']) => {
-  if (!data) {
-    throw 'data is empty';
-  }
-
-  const pool = new Pool(config.db);
-  const query = `
-    UPDATE ${TABLE_NAME}
-    SET data = $1
-    WHERE "directoryId" = $2 AND "recordId" = $3
-    RETURNING *;
-  `;
-
-  try {
-    const { rows } = await pool.query(query, [data, directoryId, recordId]);
-    return rows[0];
-  } finally {
-    pool.end();
-  }
-};
+export default RecordDataModel;

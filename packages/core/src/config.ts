@@ -7,6 +7,7 @@ export const config = {
   db: {
     user: process.env.DB_USER || 'lighthouse',
     host: process.env.DB_HOST || 'localhost',
+    port: Number(process.env.DB_PORT) || 5432,
     database: process.env.DB_NAME || 'lighthouse',
     password: process.env.DB_PASS || 'admin'
   }
