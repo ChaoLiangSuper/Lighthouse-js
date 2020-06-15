@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import { ErrorHandler } from '../utils/errorHandler';
-import DirectoryConfigModel, { DirectoryConfigAttributes } from '../models/DirectoryConfig';
+import DirectoryConfigModel from '../models/DirectoryConfig';
+import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
 
 export const getAllDirectorieConfigs: RequestHandler = async (_req, res, next) => {
   try {

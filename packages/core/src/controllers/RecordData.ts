@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
-import RecordDataModel, { RecordDataAttributes } from '../models/RecordData';
+import RecordDataModel from '../models/RecordData';
+import { RecordDataAttributes } from '../../../types/RecordData';
 import { ErrorHandler } from '../utils/errorHandler';
 
 export const getAllRecordData: RequestHandler<{ directoryConfigId: string }> = async (req, res, next) => {

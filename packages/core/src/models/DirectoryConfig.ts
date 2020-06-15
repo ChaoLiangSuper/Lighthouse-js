@@ -1,15 +1,7 @@
 import * as Sequelize from 'sequelize';
-import { FieldConfig } from '../types';
+import { DirectoryConfigAttributes, FieldConfig } from '../../../types/DirectoryConfig';
 
 const TABLE_NAME = 'lh_directory_config';
-
-export interface DirectoryConfigAttributes {
-  readonly id: string;
-  directoryName: string;
-  fields: FieldConfig[];
-  readonly createdAt?: Date;
-  readonly updatedAt?: Date;
-}
 
 class DirectoryConfigModel extends Sequelize.Model implements DirectoryConfigAttributes {
   readonly id: string;

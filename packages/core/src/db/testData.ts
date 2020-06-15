@@ -1,6 +1,6 @@
 import DirecoryConfigModel from '../models/DirectoryConfig';
 import UserModel from '../models/User';
-import { ValueTypes } from '../types';
+import { ValueTypes } from '../../../types/constants';
 
 export const initialize = () => {
   DirecoryConfigModel.bulkCreate(

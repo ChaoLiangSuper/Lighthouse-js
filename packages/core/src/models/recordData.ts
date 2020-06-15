@@ -1,15 +1,7 @@
 import * as Sequelize from 'sequelize';
-import { DataType } from '../types';
+import { RecordDataAttributes, DataType } from '../../../types/RecordData';
 
 const TABLE_NAME = 'lh_record_data';
-
-export interface RecordDataAttributes {
-  readonly id: string;
-  readonly directoryConfigId: string;
-  data: Record<string, DataType>;
-  readonly createdAt?: Date;
-  readonly updatedAt?: Date;
-}
 
 class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
   readonly id: string;

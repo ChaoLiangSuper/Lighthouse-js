@@ -1,16 +1,7 @@
 import * as Sequelize from 'sequelize';
+import { UserAttributes } from '../../../types/User';
 
 const TABLE_NAME = 'lh_users';
-
-export interface UserAttributes {
-  readonly id: string;
-  username: string;
-  password: string;
-  phone: string | null;
-  permissions: string[];
-  readonly createdAt?: Date;
-  readonly updatedAt?: Date;
-}
 
 class UserModel extends Sequelize.Model implements UserAttributes {
   readonly id: string;

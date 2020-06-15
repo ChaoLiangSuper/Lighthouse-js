@@ -2,7 +2,8 @@ import _ from 'lodash';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
-import UserModel, { UserAttributes } from '../models/User';
+import UserModel from '../models/User';
+import { UserAttributes } from '../../../types/User';
 import { ErrorHandler } from '../utils/errorHandler';
 import { config } from '../config';
 
@@ -14,7 +15,7 @@ export const login: RequestHandler<{}, {}, UserAttributes> = async (req, res, ne
 
     if (!user) return next(new ErrorHandler(401, 'User not found'));
 
-    const userWithoutPwd = _.omit(user.toJSON(), 'password');
+    const userWithoutPwd = _.omit(user.toJSON(), 'password', '');
 
     if (bcrypt.compareSync(password, user.password)) {
       const token = jwt.sign({ user: userWithoutPwd }, config.jwtToken, {
