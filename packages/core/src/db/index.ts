@@ -28,7 +28,7 @@ export const connect = async () => {
 export const initialize = async () => {
   try {
     models.initialize();
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
     console.warn(`[${instance.db}]: Initialized default tables.`);
   } catch (err) {
     console.error(`[${instance.db}]: Initialization error, ${err}`);

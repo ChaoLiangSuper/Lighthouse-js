@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import React from 'react';
 import decoder from 'jwt-decode';
-import { User } from '../types/user';
 import cookies from '../utils/cookies';
 import { setToken } from '../api';
 import { print } from '../utils/debug';
+import { UserAttributes } from '../../../types/User';
 
 interface UserContextState {
-  user: User | null;
-  login: (u: User) => void;
+  user: UserAttributes | null;
+  login: (u: UserAttributes) => void;
   logout: () => void;
 }
 
@@ -21,7 +21,7 @@ const Context = React.createContext<UserContextState>({
 const parseToken = () => {
   try {
     const token = cookies.get('lh_token') as string;
-    const { user } = decoder(token) as { user: User };
+    const { user } = decoder(token) as { user: UserAttributes };
     setToken(token);
     return user;
   } catch (err) {
@@ -30,11 +30,11 @@ const parseToken = () => {
 };
 
 const UserContext: React.FC = ({ children }) => {
-  const [user, setUser] = React.useState<User | null>(parseToken());
+  const [user, setUser] = React.useState<UserAttributes | null>(parseToken());
 
   print('UserContext', user);
 
-  const login = (nextUser: User) => setUser(nextUser);
+  const login = (nextUser: UserAttributes) => setUser(nextUser);
 
   const logout = () => {
     cookies.remove('lh_token', { path: '/' });

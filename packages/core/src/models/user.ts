@@ -46,31 +46,51 @@ class UserModel extends Sequelize.Model implements UserAttributes {
   }
 
   static async getAllUsers() {
-    const rows = await this.findAll();
-    return {
-      data: rows,
-      rowCount: rows.length
-    };
+    try {
+      const rows = await this.findAll();
+      return {
+        data: rows,
+        rowCount: rows.length
+      };
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async getOneUser(userId: UserAttributes['id']) {
-    const data = await this.findOne({ where: { id: userId } });
-    return data;
+    try {
+      const data = await this.findOne({ where: { id: userId } });
+      return data;
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async getOneUserByUsername(username: UserAttributes['username']) {
-    const data = await this.findOne({ where: { username } });
-    return data;
+    try {
+      const data = await this.findOne({ where: { username } });
+      return data;
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async addUser(newUser: Pick<UserAttributes, 'username' | 'password' | 'permissions'>) {
-    const data = await this.create(newUser);
-    return data;
+    try {
+      const data = await this.create(newUser);
+      return data;
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async updateUser(userId: UserAttributes['id'], updatedRecordData: Partial<UserAttributes>) {
-    const [, rows] = await this.update(updatedRecordData, { where: { id: userId } });
-    return rows[0];
+    try {
+      const [, rows] = await this.update(updatedRecordData, { where: { id: userId }, returning: true });
+      return rows[0];
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 }
 

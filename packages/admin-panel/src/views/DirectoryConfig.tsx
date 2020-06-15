@@ -23,7 +23,7 @@ import TypeChip from '../components/TypeChip';
 import { ValueTypes, UrlParams } from '../types/types';
 import ConfigModal from '../components/modals/ConfigModal';
 import DirectoriesContext from '../contexts/DirectoriesContext';
-import { FieldConfig } from '../types/directory';
+import { FieldConfig } from '../../../types/DirectoryConfig';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -73,7 +73,7 @@ const DirectoryConfig: React.FC = () => {
   const { fields } = directoryConfigs[currentDirectoryName];
 
   const renderDefaultValue = ({ type, defaultValue }: FieldConfig) => {
-    if (defaultValue === '') return '─';
+    if (_.isUndefined(defaultValue)) return '─';
     switch (type) {
       case ValueTypes.BOOLEAN:
         return defaultValue ? 'Yes' : 'No';

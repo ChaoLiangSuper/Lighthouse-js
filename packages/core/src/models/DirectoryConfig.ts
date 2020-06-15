@@ -37,26 +37,45 @@ class DirectoryConfigModel extends Sequelize.Model implements DirectoryConfigAtt
   }
 
   static async getAllDirectoryConfigs() {
-    const rows = await this.findAll();
-    return {
-      data: rows,
-      rowCount: rows.length
-    };
+    try {
+      const rows = await this.findAll();
+      return {
+        data: rows,
+        rowCount: rows.length
+      };
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async getOndDirectoryConfig(directoryConfigId: DirectoryConfigAttributes['id']) {
-    const data = await this.findOne({ where: { id: directoryConfigId } });
-    return data;
+    try {
+      const data = await this.findOne({ where: { id: directoryConfigId } });
+      return data;
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async addDirectoryConfig(newDirectoryConfig: Pick<DirectoryConfigAttributes, 'directoryName' | 'fields'>) {
-    const data = await this.create(newDirectoryConfig);
-    return data;
+    try {
+      const data = await this.create(newDirectoryConfig);
+      return data;
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async updateDirectoryConfig(updatedDirectoryConfig: Partial<DirectoryConfigAttributes>) {
-    const [, rows] = await this.update(updatedDirectoryConfig, { where: { id: updatedDirectoryConfig.id } });
-    return rows[0];
+    try {
+      const [, rows] = await this.update(updatedDirectoryConfig, {
+        where: { id: updatedDirectoryConfig.id },
+        returning: true
+      });
+      return rows[0];
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 }
 

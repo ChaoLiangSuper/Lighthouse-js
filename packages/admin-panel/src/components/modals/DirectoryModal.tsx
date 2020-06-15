@@ -8,7 +8,7 @@ import { TextField } from 'formik-material-ui';
 import * as Yup from 'yup';
 import Modal from '../Modal';
 import DirectoriesContext from '../../contexts/DirectoriesContext';
-import { DirectoryConfig } from '../../types/directory';
+import { DirectoryConfigAttributes } from '../../../../types/DirectoryConfig';
 import FloatingLoading from '../FloatingLoading';
 import * as directoryConfigsApi from '../../api/directoryConfigs';
 
@@ -50,12 +50,11 @@ const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose }) => {
   });
 
   const handleSubmit = async (
-    { directoryName }: Pick<DirectoryConfig, 'directoryName'>,
-    { setErrors }: FormikHelpers<Pick<DirectoryConfig, 'directoryName'>>
+    { directoryName }: Pick<DirectoryConfigAttributes, 'directoryName'>,
+    { setErrors }: FormikHelpers<Pick<DirectoryConfigAttributes, 'directoryName'>>
   ) => {
     try {
       const newDirectoryConfig = await directoryConfigsApi.addNewDirectoryConfig({
-        id: 0,
         directoryName: directoryName.trim(),
         fields: []
       });

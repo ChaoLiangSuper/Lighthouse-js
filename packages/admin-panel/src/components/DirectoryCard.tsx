@@ -14,10 +14,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 import DirectoryModal from './modals/DirectoryModal';
-import { DirectoryConfig } from '../types/directory';
+import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
 
 interface DirectoryCardProps {
-  directoryConfig?: DirectoryConfig;
+  directoryConfig?: DirectoryConfigAttributes;
 }
 
 const useStyles = makeStyles({

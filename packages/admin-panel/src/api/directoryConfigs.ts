@@ -1,26 +1,32 @@
 import _ from 'lodash';
 import { AxiosResponse } from 'axios';
 import { instance } from './index';
-import { DirectoryConfig } from '../types/directory';
+import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
 
-export const getAllDirectoryConfigs = async (): Promise<Record<string, DirectoryConfig>> => {
+export const getAllDirectoryConfigs = async (): Promise<Record<string, DirectoryConfigAttributes>> => {
   const {
     data: { data }
   } = (await instance.get('/directory/config/all')) as AxiosResponse<{
-    data: DirectoryConfig[];
+    data: DirectoryConfigAttributes[];
     rowCount: number;
   }>;
   return _.keyBy(data, 'directoryName');
 };
 
-export const addNewDirectoryConfig = async (directoryConfig: DirectoryConfig): Promise<DirectoryConfig> => {
-  const { data } = (await instance.post('/directory/config/new', directoryConfig)) as AxiosResponse<DirectoryConfig>;
+export const addNewDirectoryConfig = async (
+  newDirectoryConfig: Pick<DirectoryConfigAttributes, 'directoryName' | 'fields'>
+): Promise<DirectoryConfigAttributes> => {
+  const { data } = (await instance.post('/directory/config/new', newDirectoryConfig)) as AxiosResponse<
+    DirectoryConfigAttributes
+  >;
   return data;
 };
 
-export const updateDirectoryConfig = async (directoryConfig: DirectoryConfig): Promise<DirectoryConfig> => {
+export const updateDirectoryConfig = async (
+  directoryConfig: DirectoryConfigAttributes
+): Promise<DirectoryConfigAttributes> => {
   const { data } = (await instance.put(`/directory/config/${directoryConfig.id}`, directoryConfig)) as AxiosResponse<
-    DirectoryConfig
+    DirectoryConfigAttributes
   >;
 
   return data;

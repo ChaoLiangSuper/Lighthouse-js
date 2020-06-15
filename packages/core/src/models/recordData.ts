@@ -36,30 +36,42 @@ class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
   }
 
   static async getAllRecordData(directoryConfigId: RecordDataAttributes['directoryConfigId']) {
-    const rows = await this.findAll({ where: { directoryConfigId } });
-    return {
-      data: rows,
-      rowCount: rows.length
-    };
+    try {
+      const rows = await this.findAll({ where: { directoryConfigId } });
+      return {
+        data: rows,
+        rowCount: rows.length
+      };
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async getOneRecordData(
     directoryConfigId: RecordDataAttributes['directoryConfigId'],
     recordDataId: RecordDataAttributes['id']
   ) {
-    const data = await this.findOne({ where: { directoryConfigId, id: recordDataId } });
-    return data;
+    try {
+      const data = await this.findOne({ where: { directoryConfigId, id: recordDataId } });
+      return data;
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async addRecordData(
     directoryConfigId: RecordDataAttributes['directoryConfigId'],
     newRecordData: Pick<RecordDataAttributes, 'data'>
   ) {
-    const data = await this.create({
-      ...newRecordData,
-      directoryConfigId
-    });
-    return data;
+    try {
+      const data = await this.create({
+        ...newRecordData,
+        directoryConfigId
+      });
+      return data;
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 
   static async updateRecordData(
@@ -67,8 +79,15 @@ class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
     recordDataId: RecordDataAttributes['id'],
     updatedRecordData: Partial<RecordDataAttributes>
   ) {
-    const [, rows] = await this.update(updatedRecordData, { where: { directoryConfigId, id: recordDataId } });
-    return rows[0];
+    try {
+      const [, rows] = await this.update(updatedRecordData, {
+        where: { directoryConfigId, id: recordDataId },
+        returning: true
+      });
+      return rows[0];
+    } catch (err) {
+      return Promise.reject(err.errors[0].message);
+    }
   }
 }
 

@@ -1,15 +1,15 @@
 import _ from 'lodash';
 import React from 'react';
 import { StatusType } from '../types/status';
-import { DirectoryConfig } from '../types/directory';
+import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
 import StatusContext from './StatusContext';
 import UserContext from './UserContext';
 import * as directoryConfigsApi from '../api/directoryConfigs';
 import { print } from '../utils/debug';
 
 interface DirectoriesContextState {
-  directoryConfigs: Record<string, DirectoryConfig>;
-  updateDirectoryConfig: (dictionaryConfig: DirectoryConfig) => void;
+  directoryConfigs: Record<string, DirectoryConfigAttributes>;
+  updateDirectoryConfig: (dictionaryConfig: DirectoryConfigAttributes) => void;
 }
 
 const Context = React.createContext<DirectoriesContextState>({
@@ -23,7 +23,7 @@ const DirectoriesContext: React.FC = ({ children }) => {
   const { user } = React.useContext(UserContext.Context);
 
   // Local states
-  const [directoryConfigs, setDirectoryConfigs] = React.useState<Record<string, DirectoryConfig>>({});
+  const [directoryConfigs, setDirectoryConfigs] = React.useState<Record<string, DirectoryConfigAttributes>>({});
 
   // DEBUG
   print('DirectoriesContext', directoryConfigs);
@@ -47,7 +47,7 @@ const DirectoriesContext: React.FC = ({ children }) => {
     return () => clearDirectoryConfigs();
   }, [user, initDirectoryConfigs]);
 
-  const updateDirectoryConfig = React.useCallback((directoryConfig: DirectoryConfig) => {
+  const updateDirectoryConfig = React.useCallback((directoryConfig: DirectoryConfigAttributes) => {
     setDirectoryConfigs((prevConfigs) => ({
       ...prevConfigs,
       [directoryConfig.directoryName]: directoryConfig

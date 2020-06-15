@@ -11,7 +11,7 @@ import Modal from '../Modal';
 import DirectoriesContext from '../../contexts/DirectoriesContext';
 import StatusContext from '../../contexts/StatusContext';
 import { ValueTypes } from '../../types/types';
-import { FieldConfig } from '../../types/directory';
+import { FieldConfig } from '../../../../types/DirectoryConfig';
 import { valueTypesMapping } from '../../constant';
 import FormField from '../FormField';
 import FloatingLoading from '../FloatingLoading';
@@ -118,7 +118,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ onClose, selectedIndex, moveT
       validationSchema={validationSchema}
       validateOnMount={true}
     >
-      {({ submitForm, isValid, values, setFieldValue, isSubmitting, setValues }) => (
+      {({ submitForm, isValid, values, setFieldValue, isSubmitting, setValues, setTouched }) => (
         <Form>
           <Modal
             onClose={onClose}
@@ -145,6 +145,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ onClose, selectedIndex, moveT
                     await submitForm();
                     moveToNextIndex();
                     setValues(initialValues(selectedIndex + 1));
+                    setTouched({});
                   }}
                 >
                   Save and next

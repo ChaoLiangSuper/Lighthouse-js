@@ -34,9 +34,14 @@ export const initialize = () => {
     { ignoreDuplicates: true }
   );
 
-  UserModel.create({
-    username: 'admin',
-    password: '$2b$10$I0WcdnIf.dqSVsjznu5fgOUyGyngB5obAvrBHDGabZENlHNzQUjqK',
-    permissions: ['admin']
-  });
+  UserModel.bulkCreate(
+    [
+      {
+        username: 'admin',
+        password: '$2b$10$I0WcdnIf.dqSVsjznu5fgOUyGyngB5obAvrBHDGabZENlHNzQUjqK',
+        permissions: ['admin']
+      }
+    ],
+    { ignoreDuplicates: true }
+  );
 };
