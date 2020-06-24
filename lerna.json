@@ -8,8 +8,7 @@
       "allowBranch": "master",
       "conventionalCommits": true,
       "exact": true,
-      "message": "chore(release)",
-      "yes": "true"
+      "message": "chore(release)"
     }
   }
 }
