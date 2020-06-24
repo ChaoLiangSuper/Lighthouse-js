@@ -8,15 +8,16 @@ import Button from '@material-ui/core/Button';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Modal from '../Modal';
-import DirectoriesContext from '../../contexts/DirectoriesContext';
+import DirectoryConfigContext from '../../contexts/DirectoryConfigContext';
 import StatusContext from '../../contexts/StatusContext';
 import { ValueTypes } from '../../types/types';
-import { FieldConfig } from '../../../../types/DirectoryConfig';
+import { FieldConfig } from '@lighthousejs/types/DirectoryConfig';
 import { valueTypesMapping } from '../../constant';
 import FormField from '../FormField';
 import FloatingLoading from '../FloatingLoading';
 import * as directoryConfigsApi from '../../api/directoryConfigs';
 import { StatusType } from '../../types/status';
+import { generateDefaultField } from '../../utils/generateField';
 
 interface ConfigModalProps {
   onClose: () => void;
@@ -41,28 +42,9 @@ const defaultField: FieldConfig = {
   defaultValue: ''
 };
 
-const generateDefaultValue = (type: ValueTypes) => {
-  switch (type) {
-    case ValueTypes.BOOLEAN:
-      return (
-        <FormField name="defaultValue" select={true} label="Default value">
-          <MenuItem value="">No default value</MenuItem>
-          <MenuItem value="true">Yes</MenuItem>
-          <MenuItem value="false">No</MenuItem>
-        </FormField>
-      );
-    case ValueTypes.NUMBER:
-      return <FormField name="defaultValue" type="number" label="Default value" />;
-    case ValueTypes.STRING:
-      return <FormField name="defaultValue" label="Default value" />;
-    default:
-      return null;
-  }
-};
-
 const ConfigModal: React.FC<ConfigModalProps> = ({ onClose, selectedIndex, moveToNextIndex, directoryName }) => {
   const classes = useStyles();
-  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoriesContext.Context);
+  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoryConfigContext.Context);
   const { addStatus } = React.useContext(StatusContext.Context);
 
   const { fields } = directoryConfigs[directoryName];
@@ -133,7 +115,10 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ onClose, selectedIndex, moveT
                   className={classes.button}
                   variant="contained"
                   color="primary"
-                  onClick={submitForm}
+                  onClick={async () => {
+                    await submitForm();
+                    onClose();
+                  }}
                 >
                   Save
                 </Button>
@@ -172,7 +157,7 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ onClose, selectedIndex, moveT
                 </FormField>
               </Grid>
               <Grid item xs={12}>
-                {generateDefaultValue(values.type)}
+                {generateDefaultField(values.type)}
               </Grid>
             </Grid>
             {isSubmitting && <FloatingLoading text="Updating..." />}

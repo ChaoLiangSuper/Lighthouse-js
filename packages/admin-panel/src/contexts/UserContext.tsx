@@ -4,7 +4,7 @@ import decoder from 'jwt-decode';
 import cookies from '../utils/cookies';
 import { setToken } from '../api';
 import { print } from '../utils/debug';
-import { UserAttributes } from '../../../types/User';
+import { UserAttributes } from '@lighthousejs/types/User';
 
 interface UserContextState {
   user: UserAttributes | null;

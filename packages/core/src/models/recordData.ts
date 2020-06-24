@@ -1,5 +1,5 @@
 import * as Sequelize from 'sequelize';
-import { RecordDataAttributes, DataType } from '../../../types/RecordData';
+import { RecordDataAttributes, DataType } from '@lighthousejs/types/RecordData';
 
 const TABLE_NAME = 'lh_record_data';
 
@@ -43,7 +43,7 @@ class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
         rowCount: rows.length
       };
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -55,7 +55,7 @@ class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
       const data = await this.findOne({ where: { directoryConfigId, id: recordDataId } });
       return data;
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -70,7 +70,7 @@ class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
       });
       return data;
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -86,7 +86,7 @@ class RecordDataModel extends Sequelize.Model implements RecordDataAttributes {
       });
       return rows[0];
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 }

@@ -14,7 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 import DirectoryModal from './modals/DirectoryModal';
-import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
+import { DirectoryConfigAttributes } from '@lighthousejs/types/DirectoryConfig';
 
 interface DirectoryCardProps {
   directoryConfig?: DirectoryConfigAttributes;
@@ -53,7 +53,7 @@ const DirectoryCard: React.FC<DirectoryCardProps> = ({ directoryConfig }) => {
             <AddCircleOutlineIcon style={{ fontSize: 60, color: grey[400] }} />
           </CardActionArea>
         </Card>
-        <DirectoryModal open={isModalOpen} onClose={() => setModalOpen(false)} />
+        {isModalOpen ? <DirectoryModal onClose={() => setModalOpen(false)} /> : null}
       </>
     );
   }

@@ -15,8 +15,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { UrlParams } from '../types/types';
 import Page from '../components/Page';
 import RecordModal from '../components/modals/RecordModal';
-import DirectoriesContext from '../contexts/DirectoriesContext';
-import RecordsContext from '../contexts/RecordsContext';
+import DirectoryConfigContext from '../contexts/DirectoryConfigContext';
+import RecordDataContext from '../contexts/RecordDataContext';
 
 const useStyles = makeStyles((theme) => ({
   titleBar: {
@@ -44,17 +44,23 @@ const useStyles = makeStyles((theme) => ({
 const RecordsView: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { directoryName } = useParams<UrlParams>();
-  const [selectedRecordKey, setSelectedRecordKey] = React.useState<string | null>(null);
-  const { directoryConfigs } = React.useContext(DirectoriesContext.Context);
-  const { records: recordsCollection } = React.useContext(RecordsContext.Context);
+  const { currentDirectoryName } = useParams<UrlParams>();
+  const [selectedRecordDataId, setSelectedRecordDataId] = React.useState<string | null>(null);
+  const { directoryConfigs } = React.useContext(DirectoryConfigContext.Context);
+  const { recordDataset } = React.useContext(RecordDataContext.Context);
+  const recordData = React.useMemo(() => {
+    const currentDirectoryConfig = directoryConfigs[currentDirectoryName];
+    if (currentDirectoryConfig) {
+      return _.pickBy(recordDataset, ({ directoryConfigId }) => directoryConfigId === currentDirectoryConfig.id);
+    }
+    return {};
+  }, [recordDataset, currentDirectoryName, directoryConfigs]);
 
-  if (!directoryConfigs[directoryName]) {
+  if (!directoryConfigs[currentDirectoryName]) {
     return <Redirect to="/" />;
   }
 
-  const { fields } = directoryConfigs[directoryName];
-  const records = recordsCollection[directoryName];
+  const { fields } = directoryConfigs[currentDirectoryName];
 
   return (
     <Page>
@@ -62,11 +68,11 @@ const RecordsView: React.FC = () => {
         <Link color="inherit" component={RouterLink} to="/directory">
           Directories
         </Link>
-        <Typography color="textPrimary">{directoryName}</Typography>
+        <Typography color="textPrimary">{currentDirectoryName}</Typography>
       </Breadcrumbs>
       <div className={classes.titleBar}>
         <Typography variant="h4" component="span" className={classes.title}>
-          {directoryName}{' '}
+          {currentDirectoryName}{' '}
         </Typography>
         <Button
           variant="contained"
@@ -79,10 +85,9 @@ const RecordsView: React.FC = () => {
         </Button>
       </div>
       <Table>
-        {_.isEmpty(records) ? null : (
+        {_.isEmpty(recordData) ? null : (
           <TableHead>
             <TableRow>
-              <TableCell>Key</TableCell>
               {_.map(fields, ({ fieldName }) => (
                 <TableCell key={fieldName}>{fieldName}</TableCell>
               ))}
@@ -90,18 +95,17 @@ const RecordsView: React.FC = () => {
           </TableHead>
         )}
         <TableBody>
-          {_.map(records, (record) => (
+          {_.map(recordData, (record) => (
             <TableRow
               hover={true}
-              key={record.key}
+              key={record.id}
               onClick={() => {
-                setSelectedRecordKey(record.key);
+                setSelectedRecordDataId(record.id);
               }}
               className={clsx(classes.pointer, classes.recordRow)}
             >
-              <TableCell>{record.key}</TableCell>
               {_.map(fields, ({ fieldName }) => (
-                <TableCell key={fieldName}>{record[fieldName]}</TableCell>
+                <TableCell key={fieldName}>{record.data[fieldName].value}</TableCell>
               ))}
             </TableRow>
           ))}
@@ -109,7 +113,7 @@ const RecordsView: React.FC = () => {
             hover={true}
             className={clsx(classes.pointer, classes.recordRow)}
             onClick={() => {
-              setSelectedRecordKey(null);
+              setSelectedRecordDataId(_.uniqueId('new-record-'));
             }}
           >
             <TableCell colSpan={fields.length + 1} align="center">
@@ -118,13 +122,14 @@ const RecordsView: React.FC = () => {
           </TableRow>
         </TableBody>
       </Table>
-      <RecordModal
-        open={!!selectedRecordKey}
-        onClose={() => {
-          setSelectedRecordKey(null);
-        }}
-        recordKey={selectedRecordKey}
-      />
+      {selectedRecordDataId !== null ? (
+        <RecordModal
+          onClose={() => {
+            setSelectedRecordDataId(null);
+          }}
+          recordDataId={selectedRecordDataId}
+        />
+      ) : null}
     </Page>
   );
 };

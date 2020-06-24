@@ -3,17 +3,16 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { Formik, Form, Field, FormikHelpers } from 'formik';
-import { TextField } from 'formik-material-ui';
+import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import FormField from '../FormField';
 import Modal from '../Modal';
-import DirectoriesContext from '../../contexts/DirectoriesContext';
-import { DirectoryConfigAttributes } from '../../../../types/DirectoryConfig';
+import DirectoryConfigContext from '../../contexts/DirectoryConfigContext';
+import { DirectoryConfigAttributes } from '@lighthousejs/types/DirectoryConfig';
 import FloatingLoading from '../FloatingLoading';
 import * as directoryConfigsApi from '../../api/directoryConfigs';
 
 interface DirectoryModalProps {
-  open: boolean;
   onClose: () => void;
 }
 
@@ -28,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose }) => {
+const DirectoryModal: React.FC<DirectoryModalProps> = ({ onClose }) => {
   const classes = useStyles();
-  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoriesContext.Context);
+  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoryConfigContext.Context);
 
   const initialValues = {
     directoryName: ''
@@ -69,7 +68,7 @@ const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose }) => {
     }
   };
 
-  return open ? (
+  return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
       {({ submitForm, isSubmitting, errors }) => (
         <Form>
@@ -96,10 +95,8 @@ const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose }) => {
           >
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Field
-                  component={TextField}
+                <FormField
                   placeholder="Type the new directory name"
-                  id="directoryName"
                   name="directoryName"
                   className={classes.inputField}
                   onKeyPress={({ key }: React.KeyboardEvent) => {
@@ -117,7 +114,7 @@ const DirectoryModal: React.FC<DirectoryModalProps> = ({ open, onClose }) => {
         </Form>
       )}
     </Formik>
-  ) : null;
+  );
 };
 
 export default DirectoryModal;

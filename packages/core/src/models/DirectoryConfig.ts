@@ -1,5 +1,5 @@
 import * as Sequelize from 'sequelize';
-import { DirectoryConfigAttributes, FieldConfig } from '../../../types/DirectoryConfig';
+import { DirectoryConfigAttributes, FieldConfig } from '@lighthousejs/types/DirectoryConfig';
 
 const TABLE_NAME = 'lh_directory_config';
 
@@ -44,7 +44,7 @@ class DirectoryConfigModel extends Sequelize.Model implements DirectoryConfigAtt
         rowCount: rows.length
       };
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -53,7 +53,7 @@ class DirectoryConfigModel extends Sequelize.Model implements DirectoryConfigAtt
       const data = await this.findOne({ where: { id: directoryConfigId } });
       return data;
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -62,7 +62,7 @@ class DirectoryConfigModel extends Sequelize.Model implements DirectoryConfigAtt
       const data = await this.create(newDirectoryConfig);
       return data;
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -74,7 +74,7 @@ class DirectoryConfigModel extends Sequelize.Model implements DirectoryConfigAtt
       });
       return rows[0];
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 }

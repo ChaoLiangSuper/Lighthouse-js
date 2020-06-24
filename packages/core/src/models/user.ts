@@ -1,5 +1,5 @@
 import * as Sequelize from 'sequelize';
-import { UserAttributes } from '../../../types/User';
+import { UserAttributes } from '@lighthousejs/types/User';
 
 const TABLE_NAME = 'lh_users';
 
@@ -53,7 +53,7 @@ class UserModel extends Sequelize.Model implements UserAttributes {
         rowCount: rows.length
       };
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -62,7 +62,7 @@ class UserModel extends Sequelize.Model implements UserAttributes {
       const data = await this.findOne({ where: { id: userId } });
       return data;
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -71,7 +71,7 @@ class UserModel extends Sequelize.Model implements UserAttributes {
       const data = await this.findOne({ where: { username } });
       return data;
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -80,7 +80,7 @@ class UserModel extends Sequelize.Model implements UserAttributes {
       const data = await this.create(newUser);
       return data;
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 
@@ -89,7 +89,7 @@ class UserModel extends Sequelize.Model implements UserAttributes {
       const [, rows] = await this.update(updatedRecordData, { where: { id: userId }, returning: true });
       return rows[0];
     } catch (err) {
-      return Promise.reject(err.errors[0].message);
+      return Promise.reject(err.message);
     }
   }
 }

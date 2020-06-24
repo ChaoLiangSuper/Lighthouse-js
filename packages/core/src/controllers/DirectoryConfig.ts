@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import { ErrorHandler } from '../utils/errorHandler';
 import DirectoryConfigModel from '../models/DirectoryConfig';
-import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
+import { DirectoryConfigAttributes } from '@lighthousejs/types/DirectoryConfig';
 
 export const getAllDirectorieConfigs: RequestHandler = async (_req, res, next) => {
   try {

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
 import UserModel from '../models/User';
-import { UserAttributes } from '../../../types/User';
+import { UserAttributes } from '@lighthousejs/types/User';
 import { ErrorHandler } from '../utils/errorHandler';
 import { config } from '../config';
 

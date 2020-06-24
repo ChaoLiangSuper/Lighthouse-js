@@ -1,0 +1,21 @@
+{
+  "name": "@lighthousejs/types",
+  "version": "0.0.1",
+  "author": "Chao <cliangsuper@gmail.com>",
+  "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "typescript": "^3.9.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

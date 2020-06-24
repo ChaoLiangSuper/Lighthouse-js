@@ -1,32 +1,34 @@
 import _ from 'lodash';
 import React from 'react';
 import { StatusType } from '../types/status';
-import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
+import { DirectoryConfigs, DirectoryConfigAttributes } from '@lighthousejs/types/DirectoryConfig';
 import StatusContext from './StatusContext';
 import UserContext from './UserContext';
 import * as directoryConfigsApi from '../api/directoryConfigs';
 import { print } from '../utils/debug';
 
-interface DirectoriesContextState {
-  directoryConfigs: Record<string, DirectoryConfigAttributes>;
+interface DirectoryConfigContextState {
+  directoryConfigs: DirectoryConfigs;
   updateDirectoryConfig: (dictionaryConfig: DirectoryConfigAttributes) => void;
 }
 
-const Context = React.createContext<DirectoriesContextState>({
+const Context = React.createContext<DirectoryConfigContextState>({
   directoryConfigs: {},
   updateDirectoryConfig: _.noop
 });
 
-const DirectoriesContext: React.FC = ({ children }) => {
-  // Global contexts
+const DirectoryConfigContext: React.FC = ({ children }) => {
   const { addStatus } = React.useContext(StatusContext.Context);
   const { user } = React.useContext(UserContext.Context);
+  const [directoryConfigs, setDirectoryConfigs] = React.useState<DirectoryConfigs>(
+    JSON.parse(sessionStorage.getItem('directoryConfigs') || '{}')
+  );
 
-  // Local states
-  const [directoryConfigs, setDirectoryConfigs] = React.useState<Record<string, DirectoryConfigAttributes>>({});
+  React.useEffect(() => {
+    sessionStorage.setItem('directoryConfigs', JSON.stringify(directoryConfigs));
+  }, [directoryConfigs]);
 
-  // DEBUG
-  print('DirectoriesContext', directoryConfigs);
+  print('DirectoryConfigContext', directoryConfigs);
 
   const initDirectoryConfigs = React.useCallback(async () => {
     try {
@@ -66,9 +68,9 @@ const DirectoriesContext: React.FC = ({ children }) => {
   );
 };
 
-DirectoriesContext.displayName = 'DirectoriesContext';
+DirectoryConfigContext.displayName = 'DirectoryConfigContext';
 
 export default {
   Context,
-  State: DirectoriesContext
+  State: DirectoryConfigContext
 };

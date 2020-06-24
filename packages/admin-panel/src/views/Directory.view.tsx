@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Page from '../components/Page';
 import DirectoryCard from '../components/DirectoryCard';
-import DirectoriesContext from '../contexts/DirectoriesContext';
+import DirectoryConfigContext from '../contexts/DirectoryConfigContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Directories: React.FC = () => {
   const classes = useStyles();
-  const { directoryConfigs } = React.useContext(DirectoriesContext.Context);
+  const { directoryConfigs } = React.useContext(DirectoryConfigContext.Context);
 
   return (
     <Page>

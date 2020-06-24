@@ -22,8 +22,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TypeChip from '../components/TypeChip';
 import { ValueTypes, UrlParams } from '../types/types';
 import ConfigModal from '../components/modals/ConfigModal';
-import DirectoriesContext from '../contexts/DirectoriesContext';
-import { FieldConfig } from '../../../types/DirectoryConfig';
+import DirectoryConfigContext from '../contexts/DirectoryConfigContext';
+import StatusContext from '../contexts/StatusContext';
+import { FieldConfig } from '@lighthousejs/types/DirectoryConfig';
+import * as directoryConfigsApi from '../api/directoryConfigs';
+import { StatusType } from '../types/status';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -62,8 +65,9 @@ const useStyles = makeStyles((theme) => ({
 const DirectoryConfig: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { directoryName: currentDirectoryName } = useParams<UrlParams>();
-  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoriesContext.Context);
+  const { currentDirectoryName } = useParams<UrlParams>();
+  const { directoryConfigs, updateDirectoryConfig } = React.useContext(DirectoryConfigContext.Context);
+  const { addStatus } = React.useContext(StatusContext.Context);
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
 
   if (_.isUndefined(directoryConfigs[currentDirectoryName])) {
@@ -90,6 +94,19 @@ const DirectoryConfig: React.FC = () => {
       if (typeof prevIndex === 'number') return prevIndex + 1;
       return prevIndex;
     });
+
+  const handleDelete = async (fields: FieldConfig[]) => {
+    try {
+      const updatedDirectoryConfig = await directoryConfigsApi.updateDirectoryConfig({
+        ...directoryConfigs[currentDirectoryName],
+        fields
+      });
+      updateDirectoryConfig(updatedDirectoryConfig);
+      addStatus({ message: 'Directory updated.', type: StatusType.info });
+    } catch (err) {
+      addStatus({ message: 'Directory update failed.', type: StatusType.error });
+    }
+  };
 
   return (
     <Page>
@@ -156,10 +173,11 @@ const DirectoryConfig: React.FC = () => {
                           e.stopPropagation();
                           const newFields = [...fields];
                           _.pullAt(newFields, index);
-                          updateDirectoryConfig({
-                            ...directoryConfigs[currentDirectoryName],
-                            fields: newFields
-                          });
+                          handleDelete(newFields);
+                          // updateDirectoryConfig({
+                          //   ...directoryConfigs[currentDirectoryName],
+                          //   fields: newFields
+                          // });
                         }}
                         className={classes.deleteButton}
                       >

@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import decoder from 'jwt-decode';
 import { instance, setToken } from './index';
-import { UserAttributes } from '../../../types/User';
+import { UserAttributes } from '@lighthousejs/types/User';
 import cookies from '../utils/cookies';
 
 export const login = async (username: string, password: string): Promise<UserAttributes> => {

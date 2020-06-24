@@ -1,5 +1,5 @@
 export type UrlParams = {
-  directoryName: string;
+  currentDirectoryName: string;
 };
 
 export enum ValueTypes {

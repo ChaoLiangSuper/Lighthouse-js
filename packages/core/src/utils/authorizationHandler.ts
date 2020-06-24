@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { RequestHandler, Request } from 'express';
 import { config } from '../config';
-import { UserAttributes } from '../../../types/User';
+import { UserAttributes } from '@lighthousejs/types/User';
 import { ErrorHandler } from './errorHandler';
 
 export interface RequestWithParsedData extends Request {

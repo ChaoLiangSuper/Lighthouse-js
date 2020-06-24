@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import RecordDataModel from '../models/RecordData';
-import { RecordDataAttributes } from '../../../types/RecordData';
+import { RecordDataAttributes } from '@lighthousejs/types/RecordData';
 import { ErrorHandler } from '../utils/errorHandler';
 
 export const getAllRecordData: RequestHandler<{ directoryConfigId: string }> = async (req, res, next) => {
@@ -33,7 +33,7 @@ export const addRecordData: RequestHandler<{ directoryConfigId: string }, {}, Re
   next
 ) => {
   try {
-    const result = await RecordDataModel.addRecordData(req.params.directoryConfigId, req.body);
+    const result = await RecordDataModel.addRecordData(req.params.directoryConfigId, { data: req.body.data });
     res.status(200);
     res.send(result);
   } catch (err) {

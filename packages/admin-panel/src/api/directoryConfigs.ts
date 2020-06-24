@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { AxiosResponse } from 'axios';
 import { instance } from './index';
-import { DirectoryConfigAttributes } from '../../../types/DirectoryConfig';
+import { DirectoryConfigs, DirectoryConfigAttributes } from '@lighthousejs/types/DirectoryConfig';
 
-export const getAllDirectoryConfigs = async (): Promise<Record<string, DirectoryConfigAttributes>> => {
+export const getAllDirectoryConfigs = async (): Promise<DirectoryConfigs> => {
   const {
     data: { data }
   } = (await instance.get('/directory/config/all')) as AxiosResponse<{

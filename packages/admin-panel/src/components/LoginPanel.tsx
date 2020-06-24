@@ -6,8 +6,8 @@ import Paper from '@material-ui/core/Paper';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Formik, Form, Field, FormikHelpers } from 'formik';
-import { TextField } from 'formik-material-ui';
+import { Formik, Form, FormikHelpers } from 'formik';
+import FormField from './FormField';
 import * as authApi from '../api/authentication';
 import FloatingLoading from './FloatingLoading';
 import UserContext from '../contexts/UserContext';
@@ -89,26 +89,20 @@ const LoginPanel: React.FC = () => {
                   {error}
                 </Typography>
               ) : null}
-              <Field
-                component={TextField}
-                variant="outlined"
+              <FormField
                 margin="normal"
-                fullWidth
-                id="username"
+                fullWidth={true}
                 label="Username"
                 name="username"
                 autoComplete="username"
                 autoFocus
               />
-              <Field
-                component={TextField}
-                variant="outlined"
+              <FormField
                 margin="normal"
-                fullWidth
+                fullWidth={true}
                 name="password"
                 label="Password"
-                type="password"
-                id="password"
+                fieldType="password"
                 autoComplete="current-password"
               />
               <Button
