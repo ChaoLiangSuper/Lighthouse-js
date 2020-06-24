@@ -1,26 +1,47 @@
-export const testData = `
-  INSERT INTO lh_users (
-    username, password, permissions
-  ) VALUES (
-    'admin', '$2b$10$.Wb/OkeXCVImjV0VUh6jdeurxqkIVo5FvfT5B3GR3nl8G.OUBspB2', '["admin"]'
-  ) ON CONFLICT DO NOTHING;
+import DirecoryConfigModel from '../models/DirectoryConfig';
+import UserModel from '../models/User';
+import { ValueTypes } from '@lighthousejs/types/constants';
 
-  INSERT INTO lh_metadata (
-    directoryName, fields
-  ) VALUES ('directory1', '{
-    "number field": {
-      "type": "number"
-    },
-    "string field": {
-      "type": "string"
-    }
-  }');
+export const initialize = () => {
+  DirecoryConfigModel.bulkCreate(
+    [
+      {
+        directoryName: 'directory1',
+        fields: [
+          {
+            fieldName: 'number field',
+            defaultVaule: '',
+            type: ValueTypes.NUMBER
+          },
+          {
+            fieldName: 'string field',
+            defaultVaule: '',
+            type: ValueTypes.STRING
+          }
+        ]
+      },
+      {
+        directoryName: 'directory2',
+        fields: [
+          {
+            fieldName: 'number field',
+            defaultVaule: '',
+            type: ValueTypes.NUMBER
+          }
+        ]
+      }
+    ],
+    { ignoreDuplicates: true }
+  );
 
-  INSERT INTO lh_metadata (
-    directoryName, fields
-  ) VALUES ('directory2', '{
-    "number field": {
-      "type": "number"
-    }
-  }');
-`;
+  UserModel.bulkCreate(
+    [
+      {
+        username: 'admin',
+        password: '$2b$10$I0WcdnIf.dqSVsjznu5fgOUyGyngB5obAvrBHDGabZENlHNzQUjqK',
+        permissions: ['admin']
+      }
+    ],
+    { ignoreDuplicates: true }
+  );
+};

@@ -1,39 +1,34 @@
-import { Pool } from 'pg';
+import { Sequelize } from 'sequelize';
 import { config, instance } from '../config';
-import { testData } from './testData';
-import { createMetadataTable } from '../models/metadata';
-import { createUserTable } from '../models/user';
-import { createRecordDataTable } from '../models/recordData';
+import * as models from '../models';
+import * as testData from './testData';
 
-const pool = new Pool(config.db);
+export const sequelize = new Sequelize(config.db.database, config.db.user, config.db.password, {
+  host: config.db.host,
+  port: config.db.port,
+  dialect: 'postgres',
+  pool: {
+    min: 0,
+    max: 5,
+    acquire: 30000,
+    idle: 10000
+  },
+  logging: false
+});
 
 export const connect = async () => {
   try {
-    await pool.connect();
+    await sequelize.authenticate();
     console.warn(`[${instance.db}]: Connected to database.`);
   } catch (err) {
     console.error(`[${instance.db}]: Unable to connect to database, ${err}`);
   }
 };
 
-export const initialize = async (force?: boolean) => {
+export const initialize = async () => {
   try {
-    if (force) {
-      await pool.query(`
-        DO $$ DECLARE
-          r RECORD;
-        BEGIN
-          FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = current_schema()) LOOP
-            EXECUTE 'DROP TABLE ' || quote_ident(r.tablename) || ' CASCADE';
-          END LOOP;
-        END $$;
-      `);
-    }
-    await pool.query(`
-      ${createUserTable}
-      ${createMetadataTable}
-      ${createRecordDataTable}
-    `);
+    models.initialize();
+    await sequelize.sync();
     console.warn(`[${instance.db}]: Initialized default tables.`);
   } catch (err) {
     console.error(`[${instance.db}]: Initialization error, ${err}`);
@@ -42,7 +37,7 @@ export const initialize = async (force?: boolean) => {
 
 export const addTestData = async () => {
   try {
-    await pool.query(`${testData}`);
+    testData.initialize();
     console.warn(`[${instance.db}]: Test data loaded.`);
   } catch (err) {
     console.error(`[${instance.db}]: Test data load failed. ${err}`);

@@ -1,10 +1,6 @@
-export enum fieldType {
-  STRING = 'STRING',
-  NUMBER = 'NUMBER',
-  BOOLEAN = 'BOOLEAN'
-}
+export const AppName = 'Lighthouse-js';
 
-export const fieldTypeMapping = {
+export const valueTypesMapping = {
   STRING: 'Text',
   NUMBER: 'Number',
   BOOLEAN: 'Yes/No'

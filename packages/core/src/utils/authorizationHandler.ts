@@ -1,8 +1,12 @@
 import jwt from 'jsonwebtoken';
-import { RequestHandler } from 'express';
+import { RequestHandler, Request } from 'express';
 import { config } from '../config';
-import { RequestWithParsedData } from '../types';
+import { UserAttributes } from '@lighthousejs/types/User';
 import { ErrorHandler } from './errorHandler';
+
+export interface RequestWithParsedData extends Request {
+  user?: Pick<UserAttributes, 'username' | 'phone' | 'permissions'>;
+}
 
 export const authorizationHandler: RequestHandler = (req: RequestWithParsedData, _res, next) => {
   const authorization = req.headers['authorization'] as string;

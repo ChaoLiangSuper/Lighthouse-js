@@ -1,11 +1,13 @@
-require('dotenv').config({ path: '../../.env' });
+require('dotenv').config();
 
 export const config = {
   port: process.env.CORE_PORT || 5000,
   jwtToken: process.env.JWT_TOKEN || 'secret-token',
+  tokenExp: process.env.TOKEN_EXP || '5m',
   db: {
     user: process.env.DB_USER || 'lighthouse',
     host: process.env.DB_HOST || 'localhost',
+    port: Number(process.env.DB_PORT) || 5432,
     database: process.env.DB_NAME || 'lighthouse',
     password: process.env.DB_PASS || 'admin'
   }

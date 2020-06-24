@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
@@ -14,16 +14,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 import DirectoryModal from './modals/DirectoryModal';
-import { Directory } from '../types';
-
-interface EmptyDirectoryCardProps {
-  isEmpty: true;
-  directory?: Directory;
-}
+import { DirectoryConfigAttributes } from '@lighthousejs/types/DirectoryConfig';
 
 interface DirectoryCardProps {
-  isEmpty?: false;
-  directory?: Directory;
+  directoryConfig?: DirectoryConfigAttributes;
 }
 
 const useStyles = makeStyles({
@@ -45,16 +39,13 @@ const useStyles = makeStyles({
   }
 });
 
-const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
-  isEmpty,
-  directory
-}: EmptyDirectoryCardProps | DirectoryCardProps) => {
+const DirectoryCard: React.FC<DirectoryCardProps> = ({ directoryConfig }) => {
   const classes = useStyles();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [menuTarget, setMenuTarget] = useState<HTMLButtonElement | null>(null);
+  const [isModalOpen, setModalOpen] = React.useState(false);
+  const [menuTarget, setMenuTarget] = React.useState<HTMLButtonElement | null>(null);
   const history = useHistory();
 
-  if (isEmpty) {
+  if (!directoryConfig) {
     return (
       <>
         <Card variant="outlined" className={classes.card}>
@@ -62,14 +53,12 @@ const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
             <AddCircleOutlineIcon style={{ fontSize: 60, color: grey[400] }} />
           </CardActionArea>
         </Card>
-        <DirectoryModal open={isModalOpen} onClose={() => setModalOpen(false)} />
+        {isModalOpen ? <DirectoryModal onClose={() => setModalOpen(false)} /> : null}
       </>
     );
   }
 
-  if (!directory) return null;
-
-  const currentDirectoryPath = `/directory/${encodeURIComponent(directory.name)}`;
+  const currentDirectoryPath = `/directory/${encodeURIComponent(directoryConfig.directoryName)}`;
 
   return (
     <>
@@ -77,13 +66,13 @@ const DirectoryCard: React.FC<EmptyDirectoryCardProps | DirectoryCardProps> = ({
         <CardActionArea className={classes.button} onClick={() => history.push(`${currentDirectoryPath}/records`)}>
           <CardContent>
             <Typography gutterBottom variant="h6" component="h2">
-              {directory.name}
+              {directoryConfig.directoryName}
             </Typography>
           </CardContent>
         </CardActionArea>
         <CardActions className={classes.buttonDetailBar}>
           <Typography variant="body2" color="textSecondary" component="p">
-            {`${directory.numOfRecords} records`}
+            {/* {`${directoryConfig.} records`} */}0 records
           </Typography>
           <IconButton
             onClick={(event) => {

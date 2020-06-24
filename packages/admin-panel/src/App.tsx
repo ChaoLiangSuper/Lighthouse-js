@@ -1,9 +1,9 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Router from './Router';
-import store from './store';
+import Router from './router/Router';
+import ContextsProvider from './contexts';
+import StatusFeedback from './components/StatusFeedback';
 
 const useStyles = makeStyles({
   root: {
@@ -14,12 +14,15 @@ const useStyles = makeStyles({
 const App: React.FC = () => {
   const classes = useStyles();
   return (
-    <Provider store={store}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <Router />
-      </div>
-    </Provider>
+    <>
+      <CssBaseline />
+      <ContextsProvider>
+        <div className={classes.root}>
+          <Router />
+          <StatusFeedback />
+        </div>
+      </ContextsProvider>
+    </>
   );
 };
 
