@@ -1,6 +1,6 @@
 {
   "name": "@lighthousejs/admin-panel",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "license": "MIT",
@@ -53,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

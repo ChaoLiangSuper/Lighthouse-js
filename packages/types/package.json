@@ -1,7 +1,7 @@
 {
   "name": "@lighthousejs/types",
-  "version": "0.0.1",
-  "author": "Chao <cliangsuper@gmail.com>",
+  "version": "0.0.0",
+  "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "license": "MIT",
   "main": "dist/index.js",
