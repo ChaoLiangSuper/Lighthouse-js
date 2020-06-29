@@ -4,18 +4,20 @@
   "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "files": [
-    "dist"
+    "build"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.json"
+    "build": "rm -rf dist && tsc --project tsconfig.json",
+    "prepublish": "yarn build && node ../../scripts/prepublishOnly.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "typescript": "^3.9.5"
   },
   "publishConfig": {
+    "directory": "build",
     "access": "public"
   }
 }

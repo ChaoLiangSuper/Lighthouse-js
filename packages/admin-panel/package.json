@@ -4,6 +4,9 @@
   "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "license": "MIT",
+  "files": [
+    "build"
+  ],
   "dependencies": {
     "@lighthousejs/types": "0.0.2",
     "@material-ui/core": "^4.10.1",

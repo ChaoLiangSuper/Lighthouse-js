@@ -4,10 +4,13 @@
   "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "license": "MIT",
-  "main": "index.js",
+  "main": "build/index.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "dev": "nodemon -x ts-node src/index.ts",
-    "build": "tsc --project tsconfig.json"
+    "build": "rm -rf dist && tsc --project tsconfig.json"
   },
   "dependencies": {
     "@lighthousejs/types": "0.0.2",
