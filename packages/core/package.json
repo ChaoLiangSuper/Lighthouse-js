@@ -1,6 +1,6 @@
 {
   "name": "@lighthousejs/core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "ChaoLiangSuper <cliangsuper@gmail.com>",
   "repository": "git@github.com:ChaoLiangSuper/LightHouse-JS.git",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "prepublish": "yarn build && node ../../scripts/prepublishOnly.js"
   },
   "dependencies": {
-    "@lighthousejs/types": "0.0.2",
+    "@lighthousejs/types": "0.0.3",
     "@types/bcrypt": "^3.0.0",
     "@types/bluebird": "^3.5.32",
     "@types/cookie-parser": "^1.4.2",
