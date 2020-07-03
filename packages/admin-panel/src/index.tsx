@@ -1,11 +1,29 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { makeStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Router from './router/Router';
+import ContextsProvider from './contexts';
+import StatusFeedback from './components/StatusFeedback';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const useStyles = makeStyles({
+  root: {
+    display: 'flex'
+  }
+});
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const App: React.FC = () => {
+  const classes = useStyles();
+  return (
+    <>
+      <CssBaseline />
+      <ContextsProvider>
+        <div className={classes.root}>
+          <Router />
+          <StatusFeedback />
+        </div>
+      </ContextsProvider>
+    </>
+  );
+};
+
+export default App;
