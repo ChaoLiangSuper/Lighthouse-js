@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "publish": "lerna version",
+    "postinstall": "lerna link",
     "start:admin": "cd ./packages/admin-panel && yarn start",
     "start:core": "cd ./packages/core && yarn dev",
     "start:dev-db": "cd ./docker && docker-compose up",
